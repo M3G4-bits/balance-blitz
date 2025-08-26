@@ -27,29 +27,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
+    const initializeAuth = async () => {
+      // Set up auth state listener
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
+      );
+
+      // Check for existing session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        // Check if user is admin
+        const { data: adminData } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        const isAdmin = !!adminData;
+        
+        // Clear session for non-admin users to force fresh login
+        if (!isAdmin) {
+          await supabase.auth.signOut();
+          setSession(null);
+          setUser(null);
+        } else {
+          // Keep session for admin users
+          setSession(session);
+          setUser(session.user);
+        }
       }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+      
       setLoading(false);
-    }).catch(error => {
-      // Handle refresh token errors gracefully
-      console.log('Auth session error:', error);
-      setSession(null);
-      setUser(null);
-      setLoading(false);
-    });
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    };
+
+    initializeAuth();
   }, []);
 
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {

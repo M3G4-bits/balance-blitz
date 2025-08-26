@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.12 (cd3cf9e)"
@@ -59,6 +59,51 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_transactions: {
+        Row: {
+          account_number: string | null
+          amount: number
+          bank_name: string | null
+          created_at: string
+          description: string
+          email: string | null
+          id: string
+          recipient: string
+          sort_code: string | null
+          transfer_data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_number?: string | null
+          amount: number
+          bank_name?: string | null
+          created_at?: string
+          description: string
+          email?: string | null
+          id?: string
+          recipient: string
+          sort_code?: string | null
+          transfer_data: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_number?: string | null
+          amount?: number
+          bank_name?: string | null
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          recipient?: string
+          sort_code?: string | null
+          transfer_data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_number: string | null
@@ -69,7 +114,11 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          otp_code: string | null
           phone: string | null
+          security_code: string | null
+          tac_code: string | null
+          tin_number: string | null
           updated_at: string
           user_id: string
         }
@@ -82,7 +131,11 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          otp_code?: string | null
           phone?: string | null
+          security_code?: string | null
+          tac_code?: string | null
+          tin_number?: string | null
           updated_at?: string
           user_id: string
         }
@@ -95,7 +148,11 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          otp_code?: string | null
           phone?: string | null
+          security_code?: string | null
+          tac_code?: string | null
+          tin_number?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -252,27 +309,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_delete_user: {
+        Args: { admin_user_id: string; target_user_id: string }
+        Returns: Json
+      }
       admin_deposit: {
         Args:
           | {
-              target_account_number: string
-              deposit_amount: number
               admin_user_id: string
+              custom_bank?: string
+              custom_date?: string
+              custom_description?: string
+              custom_sender?: string
+              deposit_amount: number
+              target_account_number: string
             }
           | {
-              target_account_number: string
-              deposit_amount: number
               admin_user_id: string
-              custom_date?: string
-              custom_bank?: string
-              custom_sender?: string
-              custom_description?: string
+              deposit_amount: number
+              target_account_number: string
             }
         Returns: Json
       }
       generate_account_number: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      generate_static_codes_for_users: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       is_admin: {
         Args: { user_id: string }

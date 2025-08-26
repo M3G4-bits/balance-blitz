@@ -11,6 +11,7 @@ interface Transaction {
   created_at: string;
   status: 'completed' | 'pending' | 'failed';
   recipient?: string;
+  bank_name?: string;
 }
 
 interface Country {
@@ -117,8 +118,7 @@ export const BankingProvider = ({ children }: { children: ReactNode }) => {
         .from('transactions')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       if (data) {
@@ -131,6 +131,7 @@ export const BankingProvider = ({ children }: { children: ReactNode }) => {
           created_at: tx.created_at,
           status: (tx.status || 'completed') as 'completed' | 'pending' | 'failed',
           recipient: tx.recipient,
+          bank_name: tx.bank_name,
         }));
         setTransactions(formattedTransactions);
       }

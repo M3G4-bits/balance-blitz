@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Download, Share } from "lucide-react";
+import { CheckCircle, Download, Share, Clock } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useBanking } from "@/contexts/BankingContext";
@@ -32,15 +32,26 @@ export default function TransferSuccess() {
   return (
     <div className="min-h-screen bg-background bg-banking-gradient p-4 md:p-6">
       <div className="max-w-2xl mx-auto space-y-6">
-        <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="bg-success-green/20 p-4 rounded-full">
-              <CheckCircle className="h-12 w-12 text-success-green" />
+          <div className="text-center space-y-4">
+            <div className="flex justify-center">
+              <div className={`${transferData?.status === 'pending' ? 'bg-amber-500/20' : 'bg-success-green/20'} p-4 rounded-full`}>
+                {transferData?.status === 'pending' ? (
+                  <Clock className="h-12 w-12 text-amber-500" />
+                ) : (
+                  <CheckCircle className="h-12 w-12 text-success-green" />
+                )}
+              </div>
             </div>
+            <h1 className="text-3xl font-bold text-foreground">
+              {transferData?.status === 'pending' ? 'Transfer Pending Approval' : 'Transfer Successful!'}
+            </h1>
+            <p className="text-muted-foreground">
+              {transferData?.status === 'pending'
+                ? 'Your transfer is awaiting admin approval and will be processed once approved.'
+                : 'Your money has been sent successfully'
+              }
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Transfer Successful!</h1>
-          <p className="text-muted-foreground">Your money has been sent successfully</p>
-        </div>
 
         <Card className="bg-card/80 backdrop-blur-glass border-border shadow-glass">
           <CardHeader>
