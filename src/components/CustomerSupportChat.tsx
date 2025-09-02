@@ -18,9 +18,11 @@ interface Message {
 interface CustomerSupportChatProps {
   isOpen?: boolean;
   onToggle?: () => void;
+  unreadCount?: number;
+  showWelcomeMessage?: boolean;
 }
 
-const CustomerSupportChat = ({ isOpen: externalIsOpen, onToggle }: CustomerSupportChatProps = {}) => {
+const CustomerSupportChat = ({ isOpen: externalIsOpen, onToggle, unreadCount = 0, showWelcomeMessage = false }: CustomerSupportChatProps = {}) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   
@@ -44,6 +46,15 @@ const CustomerSupportChat = ({ isOpen: externalIsOpen, onToggle }: CustomerSuppo
       loadConversation();
     }
   }, [isOpen, user]);
+
+  // Send welcome message if needed
+  useEffect(() => {
+    if (showWelcomeMessage && conversationId && user) {
+      setTimeout(() => {
+        handleSendWelcomeMessage();
+      }, 1000);
+    }
+  }, [showWelcomeMessage, conversationId]);
 
   // Subscribe to new messages
   useEffect(() => {
@@ -155,6 +166,25 @@ const CustomerSupportChat = ({ isOpen: externalIsOpen, onToggle }: CustomerSuppo
     }
   };
 
+  const handleSendWelcomeMessage = async () => {
+    if (!conversationId || !user) return;
+
+    const welcomeMessage = `Welcome back! 👋 We're here to help you with any questions about your CSB account or transfers. How can we assist you today?`;
+
+    try {
+      await supabase
+        .from('support_messages')
+        .insert({
+          conversation_id: conversationId,
+          sender_id: user.id,
+          sender_type: 'admin',
+          message: welcomeMessage,
+        });
+    } catch (error) {
+      console.error('Error sending welcome message:', error);
+    }
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSendMessage();
@@ -165,13 +195,20 @@ const CustomerSupportChat = ({ isOpen: externalIsOpen, onToggle }: CustomerSuppo
     <>
       {/* Chat Button */}
       {!isOpen && (
-        <Button
-          onClick={toggleChat}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg z-50"
-          size="icon"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </Button>
+        <div className="fixed bottom-6 right-6 z-50">
+          <Button
+            onClick={toggleChat}
+            className="h-14 w-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg relative"
+            size="icon"
+          >
+            <MessageCircle className="h-6 w-6" />
+            {unreadCount > 0 && (
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs font-bold">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </div>
+            )}
+          </Button>
+        </div>
       )}
 
       {/* Chat Window */}

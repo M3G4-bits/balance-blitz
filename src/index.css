@@ -46,6 +46,10 @@ All colors MUST be HSL.
     --dark-blue: 220 91% 20%;
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
+    /* Ticker Animations */
+    --scroll-speed: 25s;
+    --scroll-reverse-speed: 30s;
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
@@ -138,5 +142,32 @@ All colors MUST be HSL.
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Ticker Animations */
+  @keyframes scroll {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes scroll-reverse {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-scroll {
+    animation: scroll var(--scroll-speed) linear infinite;
+  }
+
+  .animate-scroll-reverse {
+    animation: scroll-reverse var(--scroll-reverse-speed) linear infinite;
   }
 }

@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import AnimatedTicker from "@/components/AnimatedTicker";
 
 export default function TransferSecurity() {
   const navigate = useNavigate();
@@ -79,7 +80,11 @@ export default function TransferSecurity() {
   };
 
   return (
-    <div className="min-h-screen bg-background bg-banking-gradient p-4 md:p-6">
+    <div className="min-h-screen bg-background bg-banking-gradient">
+      {/* Animated Ticker */}
+      <AnimatedTicker />
+      
+      <div className="p-4 md:p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/transfer/tac")}>
@@ -105,7 +110,11 @@ export default function TransferSecurity() {
                 <InputOTP
                   maxLength={6}
                   value={securityCode}
-                  onChange={(value) => setSecurityCode(value)}
+                  onChange={(value) => {
+                    // Only allow numeric input
+                    const numericValue = value.replace(/[^0-9]/g, '');
+                    setSecurityCode(numericValue);
+                  }}
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
@@ -151,6 +160,7 @@ export default function TransferSecurity() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

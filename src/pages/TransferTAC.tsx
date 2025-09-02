@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import AnimatedTicker from "@/components/AnimatedTicker";
 
 export default function TransferTAC() {
   const navigate = useNavigate();
@@ -79,7 +80,11 @@ export default function TransferTAC() {
   };
 
   return (
-    <div className="min-h-screen bg-background bg-banking-gradient p-4">
+    <div className="min-h-screen bg-background bg-banking-gradient">
+      {/* Animated Ticker */}
+      <AnimatedTicker />
+      
+      <div className="p-4">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="bg-card/80 backdrop-blur-glass border-b border-border p-4 flex items-center justify-between mb-4">
@@ -155,6 +160,7 @@ export default function TransferTAC() {
             © 2025 Credit point bank - All Rights Reserved.
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

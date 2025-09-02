@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { useInactivityTimer } from '@/hooks/useInactivityTimer';
 
 interface AuthContextType {
   user: User | null;
@@ -26,6 +27,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const handleInactivityLogout = async () => {
+    if (user) {
+      await supabase.auth.signOut();
+    }
+  };
+
+  // 7 minutes = 7 * 60 * 1000 = 420000 milliseconds
+  useInactivityTimer({
+    timeout: 420000,
+    onTimeout: handleInactivityLogout,
+    enabled: !!user
+  });
+
   useEffect(() => {
     const initializeAuth = async () => {
       // Set up auth state listener
@@ -41,25 +55,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session?.user) {
-        // Check if user is admin
-        const { data: adminData } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-        
-        const isAdmin = !!adminData;
-        
-        // Clear session for non-admin users to force fresh login
-        if (!isAdmin) {
-          await supabase.auth.signOut();
-          setSession(null);
-          setUser(null);
-        } else {
-          // Keep session for admin users
-          setSession(session);
-          setUser(session.user);
-        }
+        // Always keep session for all users (removed admin-only restriction)
+        setSession(session);
+        setUser(session.user);
       }
       
       setLoading(false);
