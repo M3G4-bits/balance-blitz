@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBanking } from "@/contexts/BankingContext";
@@ -13,9 +14,10 @@ import AnimatedTicker from "@/components/AnimatedTicker";
 export default function TransferStart() {
   const [amount, setAmount] = useState("");
   const { user } = useAuth();
-  const { balance, formatCurrency } = useBanking();
+  const { balance, formatCurrency, country } = useBanking();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const transferLimit = 500000;
 
   useEffect(() => {
     if (!user) {
@@ -63,11 +65,23 @@ export default function TransferStart() {
       return;
     }
 
+    if (transferAmount > transferLimit) {
+      toast({
+        title: "Transfer Limit Exceeded",
+        description: `Transfer amount cannot exceed ${formatCurrency(transferLimit)}.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Navigate to transfer form with amount
     navigate("/transfer", { state: { amount: transferAmount } });
   };
 
   const displayAmount = amount ? parseFloat(amount).toFixed(2) : "0.00";
+  const currentAmount = parseFloat(amount) || 0;
+  const progressPercentage = Math.min((currentAmount / transferLimit) * 100, 100);
+  const currencySymbol = country?.currency || "£";
 
   return (
     <div className="min-h-screen bg-background bg-banking-gradient">
@@ -83,30 +97,41 @@ export default function TransferStart() {
             <h1 className="text-3xl font-bold text-foreground">Start Transfer</h1>
           </div>
 
-          <Card className="bg-card/80 backdrop-blur-glass border-border shadow-glass">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                <span>Checking Account Mode Selected</span>
+          {/* Deleted Account Section */}
+          <Card className="bg-card/40 backdrop-blur-glass border-destructive/50 shadow-glass opacity-60 relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-destructive/20 rounded-full p-2">
+                <X className="h-8 w-8 text-destructive" />
+              </div>
+            </div>
+            <CardHeader className="line-through">
+              <CardTitle className="flex items-center space-x-2 text-muted-foreground">
+                <span>Checking Account Mode</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Account Balance Display */}
-              <div className="bg-muted/30 p-4 rounded-lg border">
+            <CardContent className="space-y-6 line-through text-muted-foreground">
+              <div className="bg-muted/20 p-4 rounded-lg border">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Available Balance</span>
-                  <span className="text-xl font-bold text-primary">{formatCurrency(balance)}</span>
+                  <span className="text-sm">Available Balance</span>
+                  <span className="text-xl font-bold">{formatCurrency(balance)}</span>
                 </div>
               </div>
+            </CardContent>
+          </Card>
 
+          <Card className="bg-card/80 backdrop-blur-glass border-border shadow-glass">
+            <CardHeader>
+              <CardTitle>Transfer Amount</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
               {/* Amount Input */}
               <div className="space-y-4">
                 <Label htmlFor="amount" className="text-lg font-semibold">
-                  Transfer Amount
+                  Enter Amount
                 </Label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-lg">
-                    £
+                    {currencySymbol}
                   </span>
                   <Input
                     id="amount"
@@ -121,22 +146,33 @@ export default function TransferStart() {
                 {/* Amount Display */}
                 <div className="text-center">
                   <div className="text-3xl font-bold text-primary">
-                    £{displayAmount}
+                    {currencySymbol}{displayAmount}
                   </div>
                 </div>
 
-                {/* Quick Amount Buttons */}
-                <div className="grid grid-cols-3 gap-3">
-                  {[50, 100, 250].map((quickAmount) => (
-                    <Button
-                      key={quickAmount}
-                      variant="outline"
-                      onClick={() => setAmount(quickAmount.toString())}
-                      className="h-10"
-                    >
-                      £{quickAmount}
-                    </Button>
-                  ))}
+                {/* Transfer Limit Progress */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Transfer Limit</span>
+                    <span className="text-muted-foreground">
+                      {formatCurrency(transferLimit)}
+                    </span>
+                  </div>
+                  <Progress 
+                    value={progressPercentage} 
+                    className="h-2"
+                  />
+                  <div className="text-xs text-center text-muted-foreground">
+                    {currentAmount > transferLimit ? (
+                      <span className="text-destructive font-semibold">
+                        Limit exceeded by {formatCurrency(currentAmount - transferLimit)}
+                      </span>
+                    ) : (
+                      <span>
+                        {formatCurrency(transferLimit - currentAmount)} remaining
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -145,18 +181,11 @@ export default function TransferStart() {
                 onClick={handleContinue} 
                 className="w-full bg-primary hover:bg-primary/90 h-12"
                 size="lg"
-                disabled={!amount || parseFloat(amount) <= 0}
+                disabled={!amount || parseFloat(amount) <= 0 || parseFloat(amount) > transferLimit}
               >
-                <span className="mr-2">Continue to Transfer Form</span>
+                <span className="mr-2">Proceed with transfer</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
-
-              {/* Transfer Info */}
-              <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
-                <p className="text-sm text-blue-700 dark:text-blue-400">
-                  💡 You'll enter recipient details on the next page. Transfers are processed securely with multiple verification steps.
-                </p>
-              </div>
             </CardContent>
           </Card>
         </div>
