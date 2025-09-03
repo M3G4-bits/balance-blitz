@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BankingProvider } from "./contexts/BankingContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./components/ThemeProvider";
+import GlobalChatButton from "./components/GlobalChatButton";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TransferStart from "./pages/TransferStart";
@@ -38,12 +40,13 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <BankingProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+    <ThemeProvider>
+      <TooltipProvider>
+        <AuthProvider>
+          <BankingProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
                <Route path="/auth" element={<Auth />} />
@@ -75,10 +78,12 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-        </BankingProvider>
-      </AuthProvider>
-    </TooltipProvider>
+            </BrowserRouter>
+            <GlobalChatButton />
+          </BankingProvider>
+        </AuthProvider>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

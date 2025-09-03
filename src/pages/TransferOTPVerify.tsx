@@ -5,9 +5,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import AnimatedTicker from "@/components/AnimatedTicker";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function TransferOTPVerify() {
   const navigate = useNavigate();
@@ -209,59 +211,78 @@ export default function TransferOTPVerify() {
   if (!transferData) return null;
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-md mx-auto pt-8">
-        <Button 
-          variant="ghost" 
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Animated Top Banner */}
+      <AnimatedTicker />
+      
+      {/* Header */}
+      <div className="px-6 py-6 flex items-center bg-card/50 backdrop-blur-sm border-b">
+        <button 
           onClick={() => navigate(-1)}
-          className="mb-6"
+          className="mr-4 p-2 hover:bg-muted rounded-full transition-colors"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
+          <ArrowLeft className="w-6 h-6 text-foreground" />
+        </button>
+        <h1 className="text-xl font-semibold">Email Verification</h1>
+        <div className="flex items-center ml-auto space-x-2">
+          <ThemeToggle />
+          <Shield className="w-6 h-6 text-primary" />
+        </div>
+      </div>
 
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <Clock className="h-6 w-6 text-primary" />
+      <div className="max-w-md mx-auto p-6">
+        <Card className="border-border shadow-xl">
+          <CardHeader className="text-center pb-4">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Clock className="h-8 w-8 text-primary" />
             </div>
-            <CardTitle>Verify OTP</CardTitle>
-            <CardDescription>
-              Enter the 6-digit code sent to your email
+            <CardTitle className="text-2xl font-bold">Email Verification</CardTitle>
+            <CardDescription className="text-base">
+              Enter the 6-digit code sent to your email to complete the transfer
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-6">
-            <div className="text-center">
-              <div className={`text-lg font-semibold ${isExpired ? 'text-destructive' : 'text-muted-foreground'}`}>
-                {isExpired ? 'Expired' : formatTime(timeLeft)}
+          <CardContent className="space-y-8">
+            <div className="text-center bg-primary/5 rounded-lg p-4">
+              <div className={`text-3xl font-bold mb-1 ${isExpired ? 'text-destructive' : 'text-primary'}`}>
+                {isExpired ? 'EXPIRED' : formatTime(timeLeft)}
               </div>
-              <p className="text-sm text-muted-foreground">Time remaining</p>
+              <p className="text-sm text-muted-foreground font-medium">
+                {isExpired ? 'Code has expired' : 'Time remaining'}
+              </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex justify-center">
-                <InputOTP
-                  maxLength={6}
-                  value={otp}
-                  onChange={setOtp}
-                  disabled={isExpired}
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
+            <div className="space-y-6">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Enter the 6-digit verification code
+                </p>
+                
+                <div className="flex justify-center">
+                  <InputOTP
+                    maxLength={6}
+                    value={otp}
+                    onChange={setOtp}
+                    disabled={isExpired}
+                    className="gap-3"
+                  >
+                    <InputOTPGroup className="gap-3">
+                      <InputOTPSlot index={0} className="w-12 h-12 text-lg font-bold border-2" />
+                      <InputOTPSlot index={1} className="w-12 h-12 text-lg font-bold border-2" />
+                      <InputOTPSlot index={2} className="w-12 h-12 text-lg font-bold border-2" />
+                      <InputOTPSlot index={3} className="w-12 h-12 text-lg font-bold border-2" />
+                      <InputOTPSlot index={4} className="w-12 h-12 text-lg font-bold border-2" />
+                      <InputOTPSlot index={5} className="w-12 h-12 text-lg font-bold border-2" />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
               </div>
 
               <Button 
                 onClick={handleVerifyOTP}
                 disabled={otp.length !== 6 || isExpired}
-                className="w-full"
+                className="w-full py-3 text-base font-semibold"
+                size="lg"
               >
                 Verify & Complete Transfer
               </Button>
@@ -270,18 +291,32 @@ export default function TransferOTPVerify() {
                 <Button 
                   variant="outline"
                   onClick={handleResendOTP}
-                  className="w-full"
+                  className="w-full py-3 text-base"
+                  size="lg"
                 >
-                  Resend OTP
+                  Resend Verification Code
                 </Button>
               )}
             </div>
 
-            <div className="text-center text-sm text-muted-foreground">
-              <p>Transferring <span className="font-semibold">${transferData.amount}</span></p>
-              <p>To: {transferData.recipient}</p>
+            <div className="text-center bg-muted/50 rounded-lg p-4 space-y-2">
+              <p className="text-lg font-semibold text-foreground">
+                Transfer Amount: <span className="text-primary">${transferData.amount}</span>
+              </p>
+              <p className="text-sm text-muted-foreground">
+                To: <span className="font-medium text-foreground">{transferData.recipient}</span>
+              </p>
             </div>
           </CardContent>
+          
+          {/* Security Notice */}
+          <div className="p-6 pt-0">
+            <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
+              <p className="text-primary text-xs text-center font-medium">
+                🔒 This verification ensures your transfer is secure and authorized
+              </p>
+            </div>
+          </div>
         </Card>
       </div>
     </div>

@@ -8,95 +8,93 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Official Banking Color Scheme - Professional & Corporate */
-    --background: 220 20% 8%;
-    --foreground: 220 8% 95%;
+    /* Light Mode - Professional Banking Theme */
+    --background: 0 0% 100%;
+    --foreground: 220 13% 18%;
 
-    --card: 220 20% 12% / 0.9;
-    --card-foreground: 220 8% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 18%;
 
-    --popover: 220 20% 12%;
-    --popover-foreground: 220 8% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 18%;
 
-    --primary: 210 100% 45%;
-    --primary-foreground: 220 8% 95%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 20%;
-    --secondary-foreground: 220 8% 95%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 220 13% 18%;
 
-    --muted: 220 14% 20%;
-    --muted-foreground: 220 8% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 142 76% 36%;
-    --accent-foreground: 220 8% 95%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 220 13% 18%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 220 8% 95%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 20%;
-    --input: 220 14% 20%;
-    --ring: 210 100% 45%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 210 100% 50%;
 
-    /* Official Banking Design Tokens */
-    --banking-gradient: linear-gradient(135deg, hsl(220 20% 8%), hsl(220 14% 12%));
-    --glass-bg: 220 20% 12% / 0.3;
-    --balance-glow: 0 0 30px hsl(210 100% 45% / 0.2);
+    /* Banking Design Tokens - Light Mode */
+    --banking-gradient: linear-gradient(135deg, hsl(210 100% 97%) 0%, hsl(210 100% 95%) 100%);
+    --glass-bg: 210 40% 98% / 0.8;
+    --balance-glow: 0 0 20px hsl(210 100% 50% / 0.15);
     --success-green: 142 76% 36%;
     --warning-orange: 38 92% 50%;
-    --dark-blue: 220 91% 20%;
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Ticker Animations */
-    --scroll-speed: 25s;
-    --scroll-reverse-speed: 30s;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Dark Mode - Professional Banking Theme */
+    --background: 220 13% 9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 220 13% 13%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 220 13% 13%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 210 100% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 220 13% 18%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 220 13% 18%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 220 13% 18%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 210 100% 56%;
+
+    /* Banking Design Tokens - Dark Mode */
+    --banking-gradient: linear-gradient(135deg, hsl(220 13% 18%) 0%, hsl(220 13% 9%) 100%);
+    --glass-bg: 210 40% 98% / 0.05;
+    --balance-glow: 0 0 30px hsl(210 100% 56% / 0.3);
+    --success-green: 142 76% 36%;
+    --warning-orange: 38 92% 50%;
+    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -144,30 +142,30 @@ All colors MUST be HSL.
     display: none;
   }
 
-  /* Ticker Animations */
+  /* Ticker Animations - Right to Left */
   @keyframes scroll {
-    from {
+    0% {
       transform: translateX(100%);
     }
-    to {
+    100% {
       transform: translateX(-100%);
     }
   }
 
   @keyframes scroll-reverse {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
+    0% {
       transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
     }
   }
 
   .animate-scroll {
-    animation: scroll var(--scroll-speed) linear infinite;
+    animation: scroll 30s linear infinite;
   }
 
   .animate-scroll-reverse {
-    animation: scroll-reverse var(--scroll-reverse-speed) linear infinite;
+    animation: scroll-reverse 30s linear infinite;
   }
 }
