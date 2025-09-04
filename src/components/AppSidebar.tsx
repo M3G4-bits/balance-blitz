@@ -14,6 +14,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useBanking } from "@/contexts/BankingContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Sidebar,
   SidebarContent,
@@ -157,6 +158,12 @@ export function AppSidebar() {
       
       <SidebarFooter className="border-t p-4">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <div className="flex items-center gap-2 mb-3">
+              <ThemeToggle />
+              {state !== "collapsed" && <span className="text-sm text-muted-foreground">Theme</span>}
+            </div>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleLogout} className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10">
               <LogOut className="mr-2 h-4 w-4" />

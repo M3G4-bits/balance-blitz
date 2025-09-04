@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBanking } from "@/contexts/BankingContext";
 import { useToast } from "@/hooks/use-toast";
 import AnimatedTicker from "@/components/AnimatedTicker";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function TransferStart() {
   const [amount, setAmount] = useState("");
@@ -114,8 +113,7 @@ export default function TransferStart() {
         >
           <ArrowLeft className="w-6 h-6 text-foreground" />
         </button>
-        <div className="flex items-center ml-auto space-x-2">
-          <ThemeToggle />
+        <div className="flex items-center ml-auto">
           <Shield className="w-6 h-6 text-primary" />
         </div>
       </div>

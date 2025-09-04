@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useBanking } from "@/contexts/BankingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import { ArrowLeft, Clock, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AnimatedTicker from "@/components/AnimatedTicker";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function TransferOTPVerify() {
   const navigate = useNavigate();
@@ -224,8 +223,7 @@ export default function TransferOTPVerify() {
           <ArrowLeft className="w-6 h-6 text-foreground" />
         </button>
         <h1 className="text-xl font-semibold">Email Verification</h1>
-        <div className="flex items-center ml-auto space-x-2">
-          <ThemeToggle />
+        <div className="flex items-center ml-auto">
           <Shield className="w-6 h-6 text-primary" />
         </div>
       </div>
