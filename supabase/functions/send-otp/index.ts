@@ -86,7 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send OTP email using Resend
     const emailResponse = await resend.emails.send({
-      from: "Banking App <onboarding@resend.dev>",
+      from: "Banking App <noreply@bankingapp.com>",
       to: [email],
       subject: "Your Transaction OTP Code",
       html: `

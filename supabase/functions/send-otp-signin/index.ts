@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending signin OTP to:", email);
 
     const emailResponse = await resend.emails.send({
-      from: "CSB Banking <onboarding@resend.dev>",
+      from: "CSB Banking <noreply@bankingapp.com>",
       to: [email],
       subject: "Your Sign-in OTP Code",
       html: `
