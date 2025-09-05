@@ -100,7 +100,7 @@ const Landing = () => {
           <div className="flex items-center space-x-4">
             <ThemeToggle />
             <Button onClick={() => navigate("/captcha")} className="bg-primary hover:bg-primary/90">
-              Sign In
+              Get Started
             </Button>
           </div>
         </div>
@@ -123,10 +123,10 @@ const Landing = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" onClick={() => navigate("/captcha")} className="bg-primary hover:bg-primary/90 text-lg px-8 py-4">
-                Get Started Today <ArrowRight className="ml-2 h-5 w-5" />
+                Start Banking Today <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4">
-                Learn More
+              <Button variant="outline" size="lg" className="text-lg px-8 py-4" onClick={() => navigate("/captcha")}>
+                Sign In to Account
               </Button>
             </div>
           </div>
@@ -307,7 +307,7 @@ const Landing = () => {
           
           <div className="text-center">
             <Button size="lg" onClick={() => navigate("/captcha")} className="bg-primary hover:bg-primary/90 text-lg px-12 py-4">
-              Open Your Account Today <ArrowRight className="ml-2 h-5 w-5" />
+              Access Your Account <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>

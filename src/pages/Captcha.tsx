@@ -39,11 +39,11 @@ const Captcha = () => {
     setIsLoading(true);
     
     // Simulate verification delay
-    setTimeout(() => {
-      if (userInput.toUpperCase() === captchaCode.toUpperCase()) {
-        toast.success("Verification successful!");
-        navigate("/auth");
-      } else {
+        setTimeout(() => {
+          if (userInput.toUpperCase() === captchaCode.toUpperCase()) {
+            toast.success("Security verification complete! Redirecting to login...");
+            navigate("/auth");
+          } else {
         setAttempts(prev => prev + 1);
         
         if (attempts >= 2) {
@@ -89,9 +89,9 @@ const Captcha = () => {
           </div>
           
           <CardTitle className="text-2xl font-bold">Human Verification</CardTitle>
-          <CardDescription>
-            Please enter the security code below to continue to the banking portal
-          </CardDescription>
+              <CardDescription>
+                Please complete this security verification to access the Credit Stirling Bank login portal
+              </CardDescription>
         </CardHeader>
         
         <CardContent className="space-y-6">
@@ -173,7 +173,7 @@ const Captcha = () => {
                     Verifying...
                   </>
                 ) : (
-                  "Continue"
+                  "Proceed to Login"
                 )}
               </Button>
             </div>
@@ -181,7 +181,7 @@ const Captcha = () => {
           
           <div className="text-center">
             <p className="text-xs text-muted-foreground">
-              This security measure helps protect our banking services from automated attacks.
+              This security verification helps protect Credit Stirling Bank services from unauthorized access.
             </p>
           </div>
         </CardContent>
