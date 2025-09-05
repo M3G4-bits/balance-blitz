@@ -70,10 +70,10 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Welcome to Credit Stirling Bank PLC!",
-        description: "Your account has been created successfully.",
+        title: "Verify your email to continue",
+        description: "We sent a confirmation link to your email. After verifying, you'll be redirected here to log in.",
       });
-      navigate('/dashboard');
+      // Stay on the auth page; user must confirm email first in most setups
     }
     
     setIsLoading(false);
