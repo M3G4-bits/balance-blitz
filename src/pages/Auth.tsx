@@ -24,7 +24,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [user, navigate]);
 
@@ -45,7 +45,7 @@ const Auth = () => {
         title: "Welcome back!",
         description: "You have been logged in successfully.",
       });
-      navigate('/');
+      navigate('/dashboard');
     }
     
     setIsLoading(false);
@@ -73,7 +73,7 @@ const Auth = () => {
         title: "Welcome to Credit Stirling Bank PLC!",
         description: "Your account has been created successfully.",
       });
-      navigate('/');
+      navigate('/dashboard');
     }
     
     setIsLoading(false);
