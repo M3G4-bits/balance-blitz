@@ -8,6 +8,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./components/ThemeProvider";
 import GlobalChatButton from "./components/GlobalChatButton";
 import Index from "./pages/Index";
+import Landing from "./pages/Landing";
+import Captcha from "./pages/Captcha";
 import NotFound from "./pages/NotFound";
 import TransferStart from "./pages/TransferStart";
 import Transfer from "./pages/Transfer";
@@ -48,8 +50,10 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
-               <Route path="/auth" element={<Auth />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/captcha" element={<Captcha />} />
+              <Route path="/dashboard" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
                <Route path="/my-account" element={<MyAccount />} />
             <Route path="/transfer/start" element={<TransferStart />} />
             <Route path="/transfer" element={<Transfer />} />
