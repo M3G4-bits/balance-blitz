@@ -24,7 +24,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -45,7 +45,7 @@ const Auth = () => {
         title: "Welcome back!",
         description: "You have been logged in successfully.",
       });
-      navigate('/dashboard');
+      navigate('/');
     }
     
     setIsLoading(false);
@@ -70,10 +70,10 @@ const Auth = () => {
       });
     } else {
       toast({
-        title: "Verify your email to continue",
-        description: "We sent a confirmation link to your email. After verifying, you'll be redirected here to log in.",
+        title: "Welcome to Credit Stirling Bank PLC!",
+        description: "Your account has been created successfully.",
       });
-      // Stay on the auth page; user must confirm email first in most setups
+      navigate('/');
     }
     
     setIsLoading(false);
