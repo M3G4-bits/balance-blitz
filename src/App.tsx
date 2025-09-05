@@ -49,7 +49,7 @@ const App = () => (
             <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
+               <Route path="/auth" element={<Auth />} />
                <Route path="/my-account" element={<MyAccount />} />
             <Route path="/transfer/start" element={<TransferStart />} />
             <Route path="/transfer" element={<Transfer />} />
