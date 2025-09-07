@@ -41,65 +41,81 @@
         }
         return visitorId;
       }
+
+      // Configuration after Smartsupp loads
+      smartsupp('on', 'ready', function() {
+        // Set unique visitor identification
+        smartsupp('visitor:id', generateVisitorId());
+        
+        // Set initial visitor info
+        updateVisitorInfo();
+      });
       
-      // Set unique visitor identification
-      smartsupp('visitor:id', generateVisitorId());
-      
-      // Listen for authentication changes to update visitor info
-      window.addEventListener('storage', function(e) {
-        if (e.key === 'supabase.auth.token') {
-          try {
-            const authData = JSON.parse(e.newValue || '{}');
-            if (authData.user) {
-              // Update visitor info when user logs in
-              smartsupp('visitor:email', authData.user.email);
-              smartsupp('visitor:name', authData.user.user_metadata?.first_name + ' ' + authData.user.user_metadata?.last_name || authData.user.email);
-              smartsupp('variables', {
-                'User ID': authData.user.id,
-                'Login Status': 'Authenticated',
-                'Registration Date': new Date(authData.user.created_at).toLocaleDateString()
-              });
-            } else {
-              // Clear visitor info when user logs out but keep visitor ID
-              smartsupp('visitor:email', '');
-              smartsupp('visitor:name', 'Anonymous Visitor');
-              smartsupp('variables', {
-                'Login Status': 'Guest'
-              });
+      // Function to update visitor information
+      function updateVisitorInfo() {
+        try {
+          // Check for Supabase auth data - look for any key that contains 'sb-'
+          let authData = null;
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.includes('sb-') && key.includes('auth-token')) {
+              const data = localStorage.getItem(key);
+              if (data) {
+                try {
+                  authData = JSON.parse(data);
+                  break;
+                } catch (e) {
+                  continue;
+                }
+              }
             }
-          } catch (error) {
-            console.log('Smartsupp auth sync error:', error);
           }
+          
+          if (authData && authData.user) {
+            // Update visitor info when user is logged in
+            smartsupp('visitor:email', authData.user.email);
+            const firstName = authData.user.user_metadata?.first_name || '';
+            const lastName = authData.user.user_metadata?.last_name || '';
+            const fullName = firstName && lastName ? `${firstName} ${lastName}` : authData.user.email;
+            smartsupp('visitor:name', fullName);
+            smartsupp('variables', {
+              'User ID': authData.user.id,
+              'Login Status': 'Authenticated',
+              'Email': authData.user.email,
+              'Registration Date': new Date(authData.user.created_at).toLocaleDateString()
+            });
+          } else {
+            // Set anonymous visitor info
+            smartsupp('visitor:name', 'Anonymous Visitor');
+            smartsupp('variables', {
+              'Login Status': 'Guest',
+              'Visitor ID': generateVisitorId()
+            });
+          }
+        } catch (error) {
+          console.log('Smartsupp visitor info error:', error);
+          smartsupp('visitor:name', 'Anonymous Visitor');
+          smartsupp('variables', {
+            'Login Status': 'Guest',
+            'Visitor ID': generateVisitorId()
+          });
+        }
+      }
+      
+      // Listen for authentication changes
+      window.addEventListener('storage', function(e) {
+        if (e.key && e.key.includes('sb-') && e.key.includes('auth-token')) {
+          setTimeout(updateVisitorInfo, 500); // Small delay to ensure data is ready
         }
       });
       
-      // Check initial auth state
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          try {
-            const authData = JSON.parse(localStorage.getItem('supabase.auth.token') || '{}');
-            if (authData.user) {
-              smartsupp('visitor:email', authData.user.email);
-              smartsupp('visitor:name', authData.user.user_metadata?.first_name + ' ' + authData.user.user_metadata?.last_name || authData.user.email);
-              smartsupp('variables', {
-                'User ID': authData.user.id,
-                'Login Status': 'Authenticated',
-                'Registration Date': new Date(authData.user.created_at).toLocaleDateString()
-              });
-            } else {
-              smartsupp('visitor:name', 'Anonymous Visitor');
-              smartsupp('variables', {
-                'Login Status': 'Guest'
-              });
-            }
-          } catch (error) {
-            smartsupp('visitor:name', 'Anonymous Visitor');
-            smartsupp('variables', {
-              'Login Status': 'Guest'
-            });
-          }
-        }, 1000);
+      // Check for auth changes via window events (for same-tab changes)
+      window.addEventListener('supabase.auth.stateChange', function() {
+        setTimeout(updateVisitorInfo, 500);
       });
+      
+      // Periodic check for auth state changes (fallback)
+      setInterval(updateVisitorInfo, 30000); // Check every 30 seconds
       
       // Customization options
       smartsupp('name', 'Your Bank Support'); // Chat window title
