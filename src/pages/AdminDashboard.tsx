@@ -528,6 +528,10 @@ const AdminDashboard = () => {
 
     setIsCreatingUser(true);
     try {
+      // Debug session info
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Current session:', session?.user?.id);
+      
       const { data, error } = await supabase.functions.invoke('admin-create-user', {
         body: {
           email: newUserData.email,
@@ -536,6 +540,8 @@ const AdminDashboard = () => {
           last_name: newUserData.lastName,
         }
       });
+
+      console.log('Edge function response:', { data, error });
 
       if (error) {
         console.error('Edge function error:', error);

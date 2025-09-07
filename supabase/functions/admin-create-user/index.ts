@@ -55,12 +55,24 @@ serve(async (req) => {
     }
 
     // Check admin role
+    console.log('Checking admin role for user:', user.id);
     const { data: roleRow, error: roleError } = await supabase
       .from("admin_roles")
       .select("id")
       .eq("user_id", user.id)
       .maybeSingle();
-    if (roleError || !roleRow) {
+    
+    console.log('Admin role check result:', { roleRow, roleError });
+    
+    if (roleError) {
+      console.error('Admin role check error:', roleError);
+      return new Response(JSON.stringify({ error: `Database error: ${roleError.message}` }), {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+    
+    if (!roleRow) {
       return new Response(JSON.stringify({ error: "Forbidden: Admins only" }), {
         status: 403,
         headers: { "Content-Type": "application/json", ...corsHeaders },
