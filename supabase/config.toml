@@ -1,4 +1,7 @@
 project_id = "hpgufcjmpycafrgetrqw"
 
+[functions.admin-create-user]
+verify_jwt = true
+
 [functions.send-otp]
 verify_jwt = false

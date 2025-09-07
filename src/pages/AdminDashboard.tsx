@@ -537,7 +537,10 @@ const AdminDashboard = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
       
       // Check if the function returned an error response
       if (data && (data as any).error) {
@@ -567,7 +570,11 @@ const AdminDashboard = () => {
       } else if (errorMessage.includes('password')) {
         displayMessage = "Password does not meet requirements. Please use a stronger password.";
       } else if (errorMessage.includes('Unauthorized')) {
-        displayMessage = "You don't have permission to create users. Please contact an administrator.";
+        displayMessage = "You are not authenticated. Please log in again.";
+      } else if (errorMessage.includes('Forbidden') || errorMessage.includes('Admins only')) {
+        displayMessage = "You don't have admin privileges. Only administrators can create users.";
+      } else if (errorMessage.includes('FunctionsHttpError') || errorMessage.includes('non-2xx')) {
+        displayMessage = "Server error occurred. Please check your admin permissions and try again.";
       }
       
       toast({
