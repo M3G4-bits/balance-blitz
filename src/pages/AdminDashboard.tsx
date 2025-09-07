@@ -538,8 +538,15 @@ const AdminDashboard = () => {
       });
 
       if (error) throw error;
+      
+      // Check if the function returned an error response
       if (data && (data as any).error) {
         throw new Error((data as any).error);
+      }
+      
+      // Ensure we have a successful response
+      if (!data || !(data as any).success) {
+        throw new Error('Unknown error occurred during user creation');
       }
 
       toast({
@@ -551,9 +558,21 @@ const AdminDashboard = () => {
       fetchUsers();
     } catch (error) {
       console.error('Error creating user:', error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to create user";
+      
+      // Provide more user-friendly error messages for common cases
+      let displayMessage = errorMessage;
+      if (errorMessage.includes('email address has already been registered')) {
+        displayMessage = "A user with this email already exists. Please use a different email address.";
+      } else if (errorMessage.includes('password')) {
+        displayMessage = "Password does not meet requirements. Please use a stronger password.";
+      } else if (errorMessage.includes('Unauthorized')) {
+        displayMessage = "You don't have permission to create users. Please contact an administrator.";
+      }
+      
       toast({
         title: "Error",
-        description: "Failed to create user",
+        description: displayMessage,
         variant: "destructive"
       });
     } finally {
