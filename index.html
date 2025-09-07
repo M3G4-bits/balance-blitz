@@ -20,5 +20,39 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Smartsupp Live Chat script -->
+    <script type="text/javascript">
+      var _smartsupp = _smartsupp || {};
+      _smartsupp.key = 'YOUR_SMARTSUPP_KEY'; // Replace with your actual Smartsupp key
+      window.smartsupp||(function(d) {
+        var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+        s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+        c.type='text/javascript';c.charset='utf-8';c.async=true;
+        c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+      })(document);
+      
+      // Customization options
+      smartsupp('name', 'Your Bank Support'); // Chat window title
+      smartsupp('email', 'support@yourbank.com'); // Support email
+      smartsupp('theme', {
+        color: '#007bff', // Primary color (matches your banking theme)
+        textColor: '#ffffff', // Text color for chat bubble
+        buttonColor: '#007bff', // Chat button color
+        buttonTextColor: '#ffffff', // Button text color
+        position: 'right', // Position: 'left' or 'right'
+        zIndex: 999999, // Z-index for layering
+        offsetX: 20, // Horizontal offset from edge
+        offsetY: 20, // Vertical offset from bottom
+        bubbleStyle: 'round', // 'round' or 'square'
+        hideOfflineChat: false, // Hide chat when offline
+        showOnMobile: true, // Show on mobile devices
+      });
+      
+      // Optional: Hide chat on specific pages
+      // if (window.location.pathname === '/admin') {
+      //   smartsupp('chat:hide');
+      // }
+    </script>
   </body>
 </html>
