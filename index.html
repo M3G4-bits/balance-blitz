@@ -36,16 +36,24 @@
       function generateVisitorId() {
         let visitorId = localStorage.getItem('smartsupp_visitor_id');
         if (!visitorId) {
-          visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          // Create a truly unique ID combining timestamp, random string, and browser fingerprint
+          const timestamp = Date.now();
+          const random = Math.random().toString(36).substr(2, 9);
+          const browserFingerprint = navigator.userAgent.length + screen.width + screen.height;
+          visitorId = `visitor_${timestamp}_${random}_${browserFingerprint}`;
           localStorage.setItem('smartsupp_visitor_id', visitorId);
         }
         return visitorId;
       }
 
+      // Set visitor ID immediately before Smartsupp loads
+      const uniqueVisitorId = generateVisitorId();
+      _smartsupp.visitorId = uniqueVisitorId;
+
       // Configuration after Smartsupp loads
       smartsupp('on', 'ready', function() {
-        // Set unique visitor identification
-        smartsupp('visitor:id', generateVisitorId());
+        // Ensure unique visitor identification is set
+        smartsupp('visitor:id', uniqueVisitorId);
         
         // Set initial visitor info
         updateVisitorInfo();
