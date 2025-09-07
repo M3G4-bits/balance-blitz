@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useBanking } from "@/contexts/BankingContext";
 import { useAuth } from "@/contexts/AuthContext";
-import CustomerSupportChat from "@/components/CustomerSupportChat";
+
 
 export default function TransferFailure() {
   const navigate = useNavigate();
@@ -132,10 +132,6 @@ export default function TransferFailure() {
           </CardContent>
         </Card>
       </div>
-      <CustomerSupportChat 
-        isOpen={isChatOpen} 
-        onToggle={() => setIsChatOpen(!isChatOpen)} 
-      />
     </div>
   );
 }

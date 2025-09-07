@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, HeadphonesIcon, Mail, Phone, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import CustomerSupportChat from '@/components/CustomerSupportChat';
+
 
 const Support = () => {
   const navigate = useNavigate();
@@ -212,10 +212,6 @@ const Support = () => {
           </div>
         </div>
       </div>
-      <CustomerSupportChat 
-        isOpen={isChatOpen} 
-        onToggle={() => setIsChatOpen(!isChatOpen)} 
-      />
     </div>
   );
 };

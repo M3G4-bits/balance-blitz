@@ -835,7 +835,6 @@ import { useNavigate } from "react-router-dom";
 import { useBanking } from "@/contexts/BankingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import CustomerSupportChat from "@/components/CustomerSupportChat";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { usePresence } from "@/hooks/usePresence";
@@ -1297,7 +1296,6 @@ export const BankingDashboard = () => {
           </div>
         </div>
       </div>
-      <CustomerSupportChat />
     </SidebarProvider>
   );
 };
