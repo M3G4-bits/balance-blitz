@@ -525,6 +525,7 @@ import { useBanking } from "@/contexts/BankingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import AnimatedTicker from "@/components/AnimatedTicker";
 
 export default function TransferConfirm() {
   const navigate = useNavigate();
@@ -586,12 +587,16 @@ export default function TransferConfirm() {
   };
 
   const handleCancel = () => {
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (
-    <div className="min-h-screen bg-background bg-banking-gradient p-4 md:p-6">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background bg-banking-gradient">
+      {/* Animated Top Banner */}
+      <AnimatedTicker />
+      
+      <div className="p-4 md:p-6">
+        <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/transfer")}>
             <ArrowLeft className="h-5 w-5" />
@@ -671,6 +676,7 @@ export default function TransferConfirm() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

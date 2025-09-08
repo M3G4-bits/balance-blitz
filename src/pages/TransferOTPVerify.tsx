@@ -22,13 +22,20 @@ export default function TransferOTPVerify() {
   const transferData = location.state?.transferData;
 
   useEffect(() => {
+    // Check captcha verification
+    const captchaVerified = localStorage.getItem('captcha_verified');
+    if (!captchaVerified) {
+      navigate('/');
+      return;
+    }
+
     if (!user) {
       navigate('/auth');
       return;
     }
 
     if (!transferData) {
-      navigate('/');
+      navigate('/dashboard');
       return;
     }
   }, [user, transferData, navigate]);
