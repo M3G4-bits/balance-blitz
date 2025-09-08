@@ -101,55 +101,63 @@ export default function TransferStart() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Animated Top Banner */}
       <AnimatedTicker />
       
       {/* Header */}
-      <div className="px-6 py-6 flex items-center bg-card/50 backdrop-blur-sm border-b">
-        <button 
-          onClick={() => navigate("/")}
-          className="mr-4 p-2 hover:bg-muted rounded-full transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
-        </button>
-        <div className="flex items-center ml-auto">
-          <Shield className="w-6 h-6 text-primary" />
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border/50">
+        <div className="flex items-center justify-between px-4 py-4">
+          <button 
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-muted/50 hover:bg-muted transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+          <h1 className="text-lg font-semibold text-foreground">New Transfer</h1>
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
+            <Shield className="w-5 h-5 text-primary" />
+          </div>
         </div>
       </div>
 
       {/* Account Section */}
-      <div className="px-6 mb-8">
+      <div className="px-4 pt-6 pb-4">
+        <div className="mb-3">
+          <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">From Account</span>
+        </div>
         <div className="relative">
           <button
             onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-            className="w-full bg-card rounded-xl p-5 border border-border hover:border-primary transition-all duration-200 shadow-lg"
+            className="w-full bg-card/60 backdrop-blur-sm rounded-2xl p-4 border border-border/50 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="bg-primary p-3 rounded-lg">
-                  <CreditCard className="w-6 h-6 text-primary-foreground" />
+              <div className="flex items-center space-x-3">
+                <div className="bg-gradient-to-br from-primary to-primary/80 p-2.5 rounded-xl shadow-sm">
+                  <CreditCard className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-foreground text-lg">{selectedAccount.name}</div>
+                  <div className="font-semibold text-foreground text-base leading-tight">{selectedAccount.name}</div>
                   <div className="text-muted-foreground text-sm">{selectedAccount.number}</div>
-                  <div className="text-primary font-medium text-sm">
-                    Available: {formatCurrency(selectedAccount.balance)}
+                  <div className="text-primary font-semibold text-sm mt-0.5">
+                    {formatCurrency(selectedAccount.balance)}
                   </div>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <Check className="w-5 h-5 text-primary" />
-                <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isAccountDropdownOpen ? 'rotate-180' : ''}`} />
+                <div className="bg-green-500/20 p-1 rounded-full">
+                  <Check className="w-3 h-3 text-green-600" />
+                </div>
+                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${isAccountDropdownOpen ? 'rotate-180' : ''}`} />
               </div>
             </div>
           </button>
           
           {/* Dropdown overlay */}
           {isAccountDropdownOpen && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-2xl z-10">
-              <div className="p-4 text-muted-foreground text-sm text-center">
-                This is your only available account for transfers
+            <div className="absolute top-full left-0 right-0 mt-2 bg-card/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl z-10 overflow-hidden">
+              <div className="p-4 text-muted-foreground text-sm text-center bg-muted/30">
+                This is your primary account for transfers
               </div>
             </div>
           )}
@@ -157,54 +165,58 @@ export default function TransferStart() {
       </div>
 
       {/* Transfer Amount Section */}
-      <div className="px-6 mb-8">
-        <div className="bg-card rounded-xl p-6 border border-border shadow-xl">
-          <h2 className="text-foreground text-2xl font-bold mb-6 flex items-center">
-            Transfer Amount
-            <Clock className="w-5 h-5 ml-2 text-primary" />
-          </h2>
+      <div className="px-4 pb-4">
+        <div className="bg-card/60 backdrop-blur-sm rounded-2xl p-5 border border-border/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-foreground text-xl font-bold mb-2 flex items-center">
+              Transfer Amount
+              <Clock className="w-4 h-4 ml-2 text-primary" />
+            </h2>
+            <p className="text-muted-foreground text-sm">Enter the amount you want to transfer</p>
+          </div>
           
           <div className="mb-6">
-            <label className="text-muted-foreground text-lg mb-4 block font-medium">Enter Amount</label>
-            <div className="bg-input rounded-xl p-4 flex items-center border-2 border-border focus-within:border-primary transition-colors">
-              <span className="text-foreground text-xl mr-4 font-bold">{currencySymbol}</span>
-              <input
-                type="text"
-                value={amount}
-                onChange={handleAmountChange}
-                onBlur={handleAmountBlur}
-                placeholder="0.00"
-                className="flex-1 bg-transparent text-foreground text-2xl outline-none placeholder-muted-foreground font-semibold"
-              />
+            <div className="bg-background/50 rounded-2xl p-4 border-2 border-border/30 focus-within:border-primary/50 focus-within:bg-background/80 transition-all duration-200">
+              <div className="flex items-baseline">
+                <span className="text-muted-foreground text-lg mr-2 font-medium">{currencySymbol}</span>
+                <input
+                  type="text"
+                  value={amount}
+                  onChange={handleAmountChange}
+                  onBlur={handleAmountBlur}
+                  placeholder="0.00"
+                  className="flex-1 bg-transparent text-foreground text-3xl font-bold outline-none placeholder-muted-foreground/50"
+                />
+              </div>
             </div>
             {amount && parseFloat(amount) > selectedAccount.balance && (
-              <div className="mt-3 p-3 bg-red-900/30 border border-red-500 rounded-lg">
-                <p className="text-red-400 text-sm">
-                  Insufficient funds. Maximum available: {formatCurrency(selectedAccount.balance)}
+              <div className="mt-3 p-3 bg-destructive/10 border border-destructive/30 rounded-xl">
+                <p className="text-destructive text-sm font-medium">
+                  Insufficient funds. Available: {formatCurrency(selectedAccount.balance)}
                 </p>
               </div>
             )}
           </div>
 
-          <div className="space-y-4 mb-6">
-            <div className="flex justify-between text-muted-foreground">
-              <span className="font-medium">Per Transfer Limit</span>
-              <span className="font-semibold">{formatCurrency(transferLimit)}</span>
+          <div className="space-y-3 mb-6">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground text-sm font-medium">Daily Transfer Limit</span>
+              <span className="text-foreground font-semibold text-sm">{formatCurrency(transferLimit)}</span>
             </div>
-            <div className="w-full bg-muted h-3 rounded-full overflow-hidden">
+            <div className="w-full bg-muted/50 h-2 rounded-full overflow-hidden">
               <div 
-                className="bg-gradient-to-r from-primary to-primary/80 h-full rounded-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-primary via-primary to-primary/80 h-full rounded-full transition-all duration-700 ease-out shadow-sm"
                 style={{width: `${progressPercentage}%`}}
               ></div>
             </div>
-            <div className="text-center text-muted-foreground text-sm font-medium">
+            <div className="text-center">
               {currentAmount > transferLimit ? (
-                <span className="text-red-400 font-semibold">
-                  Limit exceeded by {formatCurrency(currentAmount - transferLimit)}
+                <span className="text-destructive text-xs font-semibold bg-destructive/10 px-2 py-1 rounded-full">
+                  Exceeds limit by {formatCurrency(currentAmount - transferLimit)}
                 </span>
               ) : (
-                <span>
-                  {formatCurrency(transferLimit - currentAmount)} remaining for this transfer
+                <span className="text-muted-foreground text-xs">
+                  {formatCurrency(transferLimit - currentAmount)} remaining today
                 </span>
               )}
             </div>
@@ -213,32 +225,37 @@ export default function TransferStart() {
           <button
             onClick={handleContinue}
             disabled={!isValidAmount || isLoading}
-            className={`py-3 px-6 rounded-lg font-medium text-sm transition-all duration-200 flex items-center justify-center transform ${
+            className={`w-full py-4 rounded-2xl font-semibold text-base transition-all duration-300 flex items-center justify-center transform ${
               isValidAmount && !isLoading
-                ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-primary/25 hover:scale-[1.02]'
-                : 'bg-muted cursor-not-allowed text-muted-foreground'
+                ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.02] active:scale-[0.98]'
+                : 'bg-muted/50 cursor-not-allowed text-muted-foreground'
             }`}
           >
             {isLoading ? (
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
-                Processing...
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current mr-3"></div>
+                <span>Processing...</span>
               </div>
             ) : (
-              <>
-                Proceed with Transfer
-                <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
-              </>
+              <div className="flex items-center">
+                <span>Continue Transfer</span>
+                <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
+              </div>
             )}
           </button>
         </div>
       </div>
 
       {/* Security Notice */}
-      <div className="px-6 pb-8">
-        <div className="bg-primary/10 border border-primary/30 rounded-xl p-4">
-          <p className="text-primary text-sm text-center font-medium">
-            🔒 Transfer fees may apply based on recipient bank and transfer type.
+      <div className="px-4 pb-6">
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4">
+          <div className="flex items-center justify-center mb-2">
+            <div className="bg-primary/20 p-2 rounded-full">
+              <Shield className="w-4 h-4 text-primary" />
+            </div>
+          </div>
+          <p className="text-primary text-xs text-center font-medium leading-relaxed">
+            Transfers are secured with bank-grade encryption. Fees may apply based on recipient bank.
           </p>
         </div>
       </div>

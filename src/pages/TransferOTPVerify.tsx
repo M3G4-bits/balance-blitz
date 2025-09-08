@@ -18,6 +18,7 @@ export default function TransferOTPVerify() {
   const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes in seconds
   const [isExpired, setIsExpired] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(true);
 
   const transferData = location.state?.transferData;
 
@@ -41,6 +42,8 @@ export default function TransferOTPVerify() {
   }, [user, transferData, navigate]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+    
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -52,7 +55,7 @@ export default function TransferOTPVerify() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isInitialized]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
