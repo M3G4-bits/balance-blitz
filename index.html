@@ -57,6 +57,11 @@
         
         // Set initial visitor info
         updateVisitorInfo();
+        
+        // Auto-show welcome message
+        setTimeout(function() {
+          smartsupp('chat:open');
+        }, 2000); // Show after 2 seconds
       });
       
       // Function to update visitor information
