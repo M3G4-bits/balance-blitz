@@ -145,12 +145,15 @@
         bubbleStyle: 'round', // 'round' or 'square'
         hideOfflineChat: false, // Hide chat when offline
         showOnMobile: true, // Show on mobile devices
+        alwaysVisible: true, // Always show chat button
+        showOnAllPages: true, // Show on all pages
       });
       
-      // Optional: Hide chat on specific pages
-      // if (window.location.pathname === '/admin') {
-      //   smartsupp('chat:hide');
-      // }
+      // Ensure chat is always visible on all pages
+      smartsupp('chat:show');
+      
+      // Force chat to be visible even on restricted pages
+      smartsupp('visibility', 'always');
     </script>
   </body>
 </html>
