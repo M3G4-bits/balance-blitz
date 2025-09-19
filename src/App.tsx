@@ -35,7 +35,7 @@ import ApplyLoan from "./pages/ApplyLoan";
 import IncreaseCreditLine from "./pages/IncreaseCreditLine";
 import Support from "./pages/Support";
 import AdminDashboard from "./pages/AdminDashboard";
-import Captcha from "./pages/Captcha";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +49,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Captcha />} />
+              <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
                <Route path="/my-account" element={<MyAccount />} />
