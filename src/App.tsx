@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BankingProvider } from "./contexts/BankingContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./components/ThemeProvider";
-import GlobalChatButton from "./components/GlobalChatButton";
+// import GlobalChatButton from "./components/GlobalChatButton"; // Replaced with Smartsupp
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TransferStart from "./pages/TransferStart";
@@ -81,7 +81,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             </BrowserRouter>
-            <GlobalChatButton />
+            {/* Smartsupp chat widget loaded via script */}
           </BankingProvider>
         </AuthProvider>
       </TooltipProvider>
