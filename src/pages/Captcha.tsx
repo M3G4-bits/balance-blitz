@@ -65,14 +65,24 @@ export default function Captcha() {
         <CardContent className="space-y-6">
           {/* Captcha Display */}
           <div className="bg-primary text-primary-foreground p-6 rounded-lg text-center">
-            <div className="text-3xl font-bold tracking-wider select-none">
+            <div className="text-4xl font-bold tracking-wider select-none font-mono">
               {captchaCode.split('').map((char, index) => (
                 <span 
                   key={index} 
-                  className="inline-block mx-1 transform rotate-3 hover:rotate-0 transition-transform"
+                  className="inline-block mx-1 transition-transform"
                   style={{ 
-                    transform: `rotate(${Math.random() * 20 - 10}deg)`,
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                    transform: `
+                      rotate(${Math.random() * 40 - 20}deg) 
+                      skew(${Math.random() * 20 - 10}deg, ${Math.random() * 15 - 7.5}deg)
+                      scale(${0.9 + Math.random() * 0.3})
+                    `,
+                    textShadow: `
+                      2px 2px 4px rgba(0,0,0,0.5),
+                      -1px -1px 2px rgba(255,255,255,0.1)
+                    `,
+                    filter: `blur(${Math.random() * 0.5}px)`,
+                    fontWeight: Math.random() > 0.5 ? 'bold' : 'normal',
+                    fontStyle: Math.random() > 0.7 ? 'italic' : 'normal'
                   }}
                 >
                   {char}
