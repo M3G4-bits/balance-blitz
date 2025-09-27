@@ -8,16 +8,10 @@ const Index = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    // Check captcha verification
-    const captchaVerified = localStorage.getItem('captcha_verified');
-    if (!captchaVerified) {
-      navigate('/');
-      return;
-    }
-
-    // Check authentication
+    // Check authentication - redirect to home if not authenticated
+    // Home component will handle captcha verification flow
     if (!user) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
   }, [user, navigate]);

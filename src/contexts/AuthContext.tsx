@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useInactivityTimer } from '@/hooks/useInactivityTimer';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   user: User | null;
@@ -27,16 +28,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const handleInactivityLogout = async () => {
+  const handleInactivityTimeout = async () => {
     if (user) {
       await supabase.auth.signOut();
+      // Redirect to home (captcha) instead of just logging out
+      window.location.href = '/';
     }
   };
 
-  // 7 minutes = 7 * 60 * 1000 = 420000 milliseconds
+  // 15 minutes = 15 * 60 * 1000 = 900000 milliseconds
   useInactivityTimer({
-    timeout: 420000,
-    onTimeout: handleInactivityLogout,
+    timeout: 900000,
+    onTimeout: handleInactivityTimeout,
     enabled: !!user
   });
 

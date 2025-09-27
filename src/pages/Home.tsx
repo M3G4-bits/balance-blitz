@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Captcha from "./Captcha";
@@ -6,6 +6,7 @@ import Captcha from "./Captcha";
 const Home = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const [captchaVerified, setCaptchaVerified] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -16,16 +17,18 @@ const Home = () => {
       return;
     }
 
-    // If user is not authenticated, check captcha verification
-    const captchaVerified = localStorage.getItem('captcha_verified');
+    // If captcha is verified, go to auth
     if (captchaVerified) {
-      // Captcha already verified, go to auth
       navigate('/auth');
       return;
     }
 
     // If no captcha verification, stay on this page to show captcha
-  }, [user, loading, navigate]);
+  }, [user, loading, captchaVerified, navigate]);
+
+  const handleCaptchaVerified = () => {
+    setCaptchaVerified(true);
+  };
 
   // Show loading or captcha for non-authenticated users
   if (loading) {
@@ -38,9 +41,8 @@ const Home = () => {
   }
 
   // Show captcha for non-authenticated users who haven't verified captcha
-  const captchaVerified = localStorage.getItem('captcha_verified');
   if (!captchaVerified) {
-    return <Captcha />;
+    return <Captcha onVerified={handleCaptchaVerified} />;
   }
 
   // This shouldn't be reached due to the useEffect redirect

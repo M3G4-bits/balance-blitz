@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
-export default function Captcha() {
-  const navigate = useNavigate();
+interface CaptchaProps {
+  onVerified: () => void;
+}
+
+export default function Captcha({ onVerified }: CaptchaProps) {
   const [captchaInput, setCaptchaInput] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
@@ -41,10 +43,8 @@ export default function Captcha() {
     
     toast.success("Verification successful!");
     
-    // Store verification status in localStorage to prevent repeated verification
-    localStorage.setItem('captcha_verified', 'true');
-    
-    navigate('/auth');
+    // Call the onVerified callback to notify parent component
+    onVerified();
   };
 
   return (

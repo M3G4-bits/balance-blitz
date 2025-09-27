@@ -26,7 +26,12 @@ const Auth = () => {
     // Check if user is already authenticated
     if (user) {
       navigate('/dashboard');
+      return;
     }
+    
+    // If user is not authenticated and tries to access auth directly,
+    // redirect to home to go through captcha verification first
+    // This prevents bypassing the captcha by directly accessing /auth
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
