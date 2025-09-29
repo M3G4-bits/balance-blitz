@@ -36,9 +36,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // 15 minutes = 15 * 60 * 1000 = 900000 milliseconds
+  // 7 minutes = 7 * 60 * 1000 = 420000 milliseconds
   useInactivityTimer({
-    timeout: 900000,
+    timeout: 420000,
     onTimeout: handleInactivityTimeout,
     enabled: !!user
   });
