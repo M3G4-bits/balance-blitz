@@ -95,6 +95,13 @@ const AdminDashboard = () => {
   });
 
   const checkAdminAccess = async () => {
+    // Check captcha verification first
+    const captchaVerified = sessionStorage.getItem('captchaVerified') === 'true';
+    if (!captchaVerified) {
+      navigate('/');
+      return;
+    }
+
     if (!user) {
       // Redirect to home to ensure captcha flow is followed
       navigate('/');
