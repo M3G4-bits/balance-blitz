@@ -57,7 +57,7 @@ export default function Captcha({ onVerified }: CaptchaProps) {
           <div className="bg-primary/10 border-l-4 border-primary px-4 py-3 rounded text-left">
             <p className="text-muted-foreground text-sm leading-relaxed">
               Please confirm you are not a Robot by verifying the auto-generated code below. 
-              This will enable you to have access to CPB Online banking channels.
+              This will enable you to have access to CSB Online banking channels.
             </p>
           </div>
         </CardHeader>
@@ -116,7 +116,7 @@ export default function Captcha({ onVerified }: CaptchaProps) {
           {/* Security Notice */}
           <div className="text-center">
             <p className="text-xs text-muted-foreground">
-              🔒 This verification helps protect against automated attacks
+               This verification helps protect against automated attacks
             </p>
           </div>
         </CardContent>
