@@ -95,16 +95,9 @@ const AdminDashboard = () => {
   });
 
   const checkAdminAccess = async () => {
-    // Check captcha verification first
-    const captchaVerified = sessionStorage.getItem('captchaVerified') === 'true';
-    if (!captchaVerified) {
-      navigate('/');
-      return;
-    }
-
+    // Allow authenticated users; captcha not required here
     if (!user) {
-      // Redirect to home to ensure captcha flow is followed
-      navigate('/');
+      navigate('/auth');
       return;
     }
 
@@ -113,7 +106,7 @@ const AdminDashboard = () => {
         .from('admin_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error || !data) {
         toast({
@@ -121,22 +114,22 @@ const AdminDashboard = () => {
           description: "You don't have admin privileges",
           variant: "destructive",
         });
-        navigate('/');
+        navigate('/dashboard');
         return;
       }
 
       setIsLoading(false);
     } catch (error) {
       console.error('Error checking admin access:', error);
-      navigate('/');
+      navigate('/dashboard');
     }
   };
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading) {
       checkAdminAccess();
     }
-  }, [user, loading]);
+  }, [loading, user]);
 
   useEffect(() => {
     if (!isLoading) {
