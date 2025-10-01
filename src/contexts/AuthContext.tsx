@@ -31,6 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleInactivityTimeout = async () => {
     if (user) {
       await supabase.auth.signOut();
+      // Clear captcha verification on timeout
+      sessionStorage.removeItem('captchaVerified');
       // Redirect to home (captcha) instead of just logging out
       window.location.href = '/';
     }

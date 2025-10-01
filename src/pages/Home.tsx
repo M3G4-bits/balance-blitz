@@ -6,7 +6,10 @@ import Captcha from "./Captcha";
 const Home = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(() => {
+    // Check sessionStorage on mount
+    return sessionStorage.getItem('captchaVerified') === 'true';
+  });
 
   useEffect(() => {
     if (loading) return;
@@ -28,6 +31,8 @@ const Home = () => {
 
   const handleCaptchaVerified = () => {
     setCaptchaVerified(true);
+    // Store in sessionStorage to persist across route changes
+    sessionStorage.setItem('captchaVerified', 'true');
   };
 
   // Show loading or captcha for non-authenticated users

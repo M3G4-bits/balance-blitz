@@ -96,7 +96,8 @@ const AdminDashboard = () => {
 
   const checkAdminAccess = async () => {
     if (!user) {
-      navigate('/auth');
+      // Redirect to home to ensure captcha flow is followed
+      navigate('/');
       return;
     }
 
