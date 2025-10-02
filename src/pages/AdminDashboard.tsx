@@ -20,6 +20,7 @@ interface UserProfile {
   account_number: string;
   balance: number;
   is_online: boolean;
+  daily_transfer_limit: number;
 }
 
 interface SupportConversation {
@@ -53,6 +54,7 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [newBalance, setNewBalance] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
+  const [newTransferLimit, setNewTransferLimit] = useState("");
   const [balanceOperation, setBalanceOperation] = useState<"set" | "deposit">("deposit");
   const [conversations, setConversations] = useState<SupportConversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
@@ -150,7 +152,7 @@ const AdminDashboard = () => {
 
       const { data: balances, error: balancesError } = await supabase
         .from('user_balances')
-        .select('user_id, balance');
+        .select('user_id, balance, daily_transfer_limit');
 
       if (balancesError) throw balancesError;
 
@@ -167,6 +169,7 @@ const AdminDashboard = () => {
           ...profile,
           balance: userBalance?.balance || 0,
           is_online: userPresence?.is_online || false,
+          daily_transfer_limit: userBalance?.daily_transfer_limit || 10000,
         };
       });
 
@@ -1033,15 +1036,60 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      <p><strong>Name:</strong> {selectedUser.first_name} {selectedUser.last_name}</p>
-                      <p><strong>Email:</strong> {selectedUser.email}</p>
-                      <p><strong>Account:</strong> {selectedUser.account_number}</p>
-                      <p><strong>Current Balance:</strong> ${selectedUser.balance}</p>
-                      <p><strong>Status:</strong> 
-                        <Badge variant={selectedUser.is_online ? "default" : "secondary"} className="ml-2">
-                          {selectedUser.is_online ? "Online" : "Offline"}
-                        </Badge>
-                      </p>
+                       <p><strong>Name:</strong> {selectedUser.first_name} {selectedUser.last_name}</p>
+                       <p><strong>Email:</strong> {selectedUser.email}</p>
+                       <p><strong>Account:</strong> {selectedUser.account_number}</p>
+                       <p><strong>Current Balance:</strong> ${selectedUser.balance}</p>
+                       <p><strong>Daily Transfer Limit:</strong> ${selectedUser.daily_transfer_limit}</p>
+                       <p><strong>Status:</strong> 
+                         <Badge variant={selectedUser.is_online ? "default" : "secondary"} className="ml-2">
+                           {selectedUser.is_online ? "Online" : "Offline"}
+                         </Badge>
+                       </p>
+                       
+                       <Separator className="my-4" />
+                       
+                       <div className="space-y-2">
+                         <label className="text-sm font-medium">Update Daily Transfer Limit</label>
+                         <Input
+                           type="number"
+                           value={newTransferLimit}
+                           onChange={(e) => setNewTransferLimit(e.target.value)}
+                           placeholder={selectedUser.daily_transfer_limit.toString()}
+                         />
+                         <Button 
+                           onClick={async () => {
+                             if (!newTransferLimit) return;
+                             try {
+                               const { error } = await supabase
+                                 .from('user_balances')
+                                 .update({ daily_transfer_limit: parseFloat(newTransferLimit) })
+                                 .eq('user_id', selectedUser.user_id);
+
+                               if (error) throw error;
+
+                               toast({
+                                 title: "Success",
+                                 description: "Transfer limit updated successfully",
+                               });
+                               
+                               setNewTransferLimit("");
+                               fetchUsers();
+                             } catch (error) {
+                               console.error('Error updating transfer limit:', error);
+                               toast({
+                                 title: "Error",
+                                 description: "Failed to update transfer limit",
+                                 variant: "destructive",
+                               });
+                             }
+                           }}
+                           disabled={!newTransferLimit}
+                           className="w-full"
+                         >
+                           Update Transfer Limit
+                         </Button>
+                       </div>
                     </div>
                   </CardContent>
                 </Card>

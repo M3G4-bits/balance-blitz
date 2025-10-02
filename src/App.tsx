@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BankingProvider } from "./contexts/BankingContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./components/ThemeProvider";
+import Footer from "./components/Footer";
 // import GlobalChatButton from "./components/GlobalChatButton"; // Replaced with Smartsupp
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -48,38 +49,43 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/dashboard" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-               <Route path="/my-account" element={<MyAccount />} />
-            <Route path="/transfer/start" element={<TransferStart />} />
-            <Route path="/transfer" element={<Transfer />} />
-          <Route path="/transfer/confirm" element={<TransferConfirm />} />
-          <Route path="/transfer/tac" element={<TransferTAC />} />
-          <Route path="/transfer/security" element={<TransferSecurity />} />
-          <Route path="/transfer/tin" element={<TransferTIN />} />
-          <Route path="/transfer/otp" element={<TransferOTP />} />
-           <Route path="/transfer/success" element={<TransferSuccess />} />
-           <Route path="/transfer/failure" element={<TransferFailure />} />
-           <Route path="/transfer-otp-verify" element={<TransferOTPVerify />} />
-          <Route path="/deposit" element={<Deposit />} />
-          <Route path="/account-summary" element={<AccountSummary />} />
-          <Route path="/travel-leisure" element={<TravelLeisure />} />
-          <Route path="/admin/deposit" element={<AdminDeposit />} />
-              <Route path="/savings" element={<Savings />} />
-              <Route path="/pay-bills" element={<PayBills />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/kyc-status" element={<KYCStatus />} />
-              <Route path="/virtual-cards" element={<VirtualCards />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/apply-loan" element={<ApplyLoan />} />
-              <Route path="/increase-credit-line" element={<IncreaseCreditLine />} />
-              <Route path="/support" element={<Support />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+              <div className="flex flex-col min-h-screen">
+                <div className="flex-grow">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/dashboard" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/my-account" element={<MyAccount />} />
+                    <Route path="/transfer/start" element={<TransferStart />} />
+                    <Route path="/transfer" element={<Transfer />} />
+                    <Route path="/transfer/confirm" element={<TransferConfirm />} />
+                    <Route path="/transfer/tac" element={<TransferTAC />} />
+                    <Route path="/transfer/security" element={<TransferSecurity />} />
+                    <Route path="/transfer/tin" element={<TransferTIN />} />
+                    <Route path="/transfer/otp" element={<TransferOTP />} />
+                    <Route path="/transfer/success" element={<TransferSuccess />} />
+                    <Route path="/transfer/failure" element={<TransferFailure />} />
+                    <Route path="/transfer-otp-verify" element={<TransferOTPVerify />} />
+                    <Route path="/deposit" element={<Deposit />} />
+                    <Route path="/account-summary" element={<AccountSummary />} />
+                    <Route path="/travel-leisure" element={<TravelLeisure />} />
+                    <Route path="/admin/deposit" element={<AdminDeposit />} />
+                    <Route path="/savings" element={<Savings />} />
+                    <Route path="/pay-bills" element={<PayBills />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/kyc-status" element={<KYCStatus />} />
+                    <Route path="/virtual-cards" element={<VirtualCards />} />
+                    <Route path="/history" element={<History />} />
+                    <Route path="/apply-loan" element={<ApplyLoan />} />
+                    <Route path="/increase-credit-line" element={<IncreaseCreditLine />} />
+                    <Route path="/support" element={<Support />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </div>
+                <Footer />
+              </div>
             </BrowserRouter>
             {/* Smartsupp chat widget loaded via script */}
           </BankingProvider>

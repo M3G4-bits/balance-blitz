@@ -68,6 +68,8 @@ export type Database = {
           description: string
           email: string | null
           id: string
+          otp_code: string | null
+          otp_expires_at: string | null
           recipient: string
           sort_code: string | null
           transfer_data: Json
@@ -82,6 +84,8 @@ export type Database = {
           description: string
           email?: string | null
           id?: string
+          otp_code?: string | null
+          otp_expires_at?: string | null
           recipient: string
           sort_code?: string | null
           transfer_data: Json
@@ -96,6 +100,8 @@ export type Database = {
           description?: string
           email?: string | null
           id?: string
+          otp_code?: string | null
+          otp_expires_at?: string | null
           recipient?: string
           sort_code?: string | null
           transfer_data?: Json
@@ -187,6 +193,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          is_read: boolean | null
           message: string
           sender_id: string
           sender_type: string
@@ -195,6 +202,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          is_read?: boolean | null
           message: string
           sender_id: string
           sender_type: string
@@ -203,6 +211,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          is_read?: boolean | null
           message?: string
           sender_id?: string
           sender_type?: string
@@ -263,6 +272,7 @@ export type Database = {
         Row: {
           balance: number
           currency: string
+          daily_transfer_limit: number | null
           id: string
           updated_at: string
           user_id: string
@@ -270,6 +280,7 @@ export type Database = {
         Insert: {
           balance?: number
           currency?: string
+          daily_transfer_limit?: number | null
           id?: string
           updated_at?: string
           user_id: string
@@ -277,6 +288,7 @@ export type Database = {
         Update: {
           balance?: number
           currency?: string
+          daily_transfer_limit?: number | null
           id?: string
           updated_at?: string
           user_id?: string
