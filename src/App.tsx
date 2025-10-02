@@ -77,7 +77,6 @@ const App = () => (
               <Route path="/increase-credit-line" element={<IncreaseCreditLine />} />
               <Route path="/support" element={<Support />} />
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/*" element={<AdminDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
