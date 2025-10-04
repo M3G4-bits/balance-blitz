@@ -93,6 +93,36 @@ export const BankingProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [user]);
 
+  // Real-time subscription for balance and transfer limit updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('balance-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'user_balances',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('Balance/limit change detected:', payload);
+          // Update balance and transfer limit in real-time
+          if (payload.new) {
+            setBalance(Number(payload.new.balance));
+            setDailyTransferLimit(Number(payload.new.daily_transfer_limit) || 10000);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   const fetchUserBalance = async () => {
     if (!user) return;
     
