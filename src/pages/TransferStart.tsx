@@ -11,10 +11,9 @@ export default function TransferStart() {
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
-  const { balance, formatCurrency, country } = useBanking();
+  const { balance, formatCurrency, country, dailyTransferLimit } = useBanking();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const transferLimit = 500000;
 
   useEffect(() => {
     if (!user) {
@@ -69,10 +68,10 @@ export default function TransferStart() {
       return;
     }
 
-    if (transferAmount > transferLimit) {
+    if (transferAmount > dailyTransferLimit) {
       toast({
         title: "Transfer Limit Exceeded",
-        description: `Transfer amount cannot exceed ${formatCurrency(transferLimit)}.`,
+        description: `Transfer amount cannot exceed ${formatCurrency(dailyTransferLimit)}.`,
         variant: "destructive"
       });
       return;
@@ -89,9 +88,9 @@ export default function TransferStart() {
 
   const displayAmount = amount ? parseFloat(amount).toFixed(2) : "0.00";
   const currentAmount = parseFloat(amount) || 0;
-  const progressPercentage = Math.min((currentAmount / transferLimit) * 100, 100);
+  const progressPercentage = Math.min((currentAmount / dailyTransferLimit) * 100, 100);
   const currencySymbol = country?.currency || "£";
-  const isValidAmount = amount && parseFloat(amount) > 0 && parseFloat(amount) <= balance && parseFloat(amount) <= transferLimit;
+  const isValidAmount = amount && parseFloat(amount) > 0 && parseFloat(amount) <= balance && parseFloat(amount) <= dailyTransferLimit;
 
   const selectedAccount = {
     name: 'Checking Account',
@@ -201,7 +200,7 @@ export default function TransferStart() {
           <div className="space-y-3 mb-6">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground text-sm font-medium">Daily Transfer Limit</span>
-              <span className="text-foreground font-semibold text-sm">{formatCurrency(transferLimit)}</span>
+              <span className="text-foreground font-semibold text-sm">{formatCurrency(dailyTransferLimit)}</span>
             </div>
             <div className="w-full bg-muted/50 h-2 rounded-full overflow-hidden">
               <div 
@@ -210,13 +209,13 @@ export default function TransferStart() {
               ></div>
             </div>
             <div className="text-center">
-              {currentAmount > transferLimit ? (
+              {currentAmount > dailyTransferLimit ? (
                 <span className="text-destructive text-xs font-semibold bg-destructive/10 px-2 py-1 rounded-full">
-                  Exceeds limit by {formatCurrency(currentAmount - transferLimit)}
+                  Exceeds limit by {formatCurrency(currentAmount - dailyTransferLimit)}
                 </span>
               ) : (
                 <span className="text-muted-foreground text-xs">
-                  {formatCurrency(transferLimit - currentAmount)} remaining today
+                  {formatCurrency(dailyTransferLimit - currentAmount)} remaining today
                 </span>
               )}
             </div>

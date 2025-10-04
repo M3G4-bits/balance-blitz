@@ -25,6 +25,7 @@ interface BankingContextType {
   balance: number;
   transactions: Transaction[];
   country: Country;
+  dailyTransferLimit: number;
   setBalance: (balance: number) => void;
   addTransaction: (transaction: Omit<Transaction, 'id' | 'created_at'>) => void;
   setCountry: (country: Country) => void;
@@ -53,6 +54,7 @@ export const useBanking = () => {
 export const BankingProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [balance, setBalance] = useState(0);
+  const [dailyTransferLimit, setDailyTransferLimit] = useState(10000);
   const [country, setCountry] = useState<Country>(countries[0]); // Default to US
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -97,13 +99,14 @@ export const BankingProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data, error } = await supabase
         .from('user_balances')
-        .select('balance, currency')
+        .select('balance, currency, daily_transfer_limit')
         .eq('user_id', user.id)
         .maybeSingle();
 
       if (error) throw error;
       if (data) {
         setBalance(Number(data.balance));
+        setDailyTransferLimit(Number(data.daily_transfer_limit) || 10000);
       }
     } catch (error) {
       console.error('Error fetching balance:', error);
@@ -234,6 +237,7 @@ export const BankingProvider = ({ children }: { children: ReactNode }) => {
       balance,
       transactions,
       country,
+      dailyTransferLimit,
       setBalance,
       addTransaction,
       setCountry,
