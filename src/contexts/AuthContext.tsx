@@ -4,11 +4,29 @@ import { supabase } from '@/integrations/supabase/client';
 import { useInactivityTimer } from '@/hooks/useInactivityTimer';
 import { useNavigate } from 'react-router-dom';
 
+interface SignUpData {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  address?: string;
+  city?: string;
+  stateProvince?: string;
+  zipCode?: string;
+  dateOfBirth?: string;
+  occupation?: string;
+  annualIncomeRange?: string;
+  ssnTin?: string;
+  accountType?: string;
+  passportImageUrl?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<{ error: any }>;
+  isAdmin: boolean;
+  signUp: (data: SignUpData) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -27,6 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleInactivityTimeout = async () => {
     if (user) {
@@ -49,9 +68,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initializeAuth = async () => {
       // Set up auth state listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (event, session) => {
+        async (event, session) => {
           setSession(session);
           setUser(session?.user ?? null);
+          
+          // Check admin status
+          if (session?.user) {
+            const { data } = await supabase
+              .from('admin_roles')
+              .select('role')
+              .eq('user_id', session.user.id)
+              .single();
+            setIsAdmin(!!data);
+          } else {
+            setIsAdmin(false);
+          }
+          
           setLoading(false);
         }
       );
@@ -60,9 +92,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session?.user) {
-        // Always keep session for all users (removed admin-only restriction)
         setSession(session);
         setUser(session.user);
+        
+        // Check admin status
+        const { data } = await supabase
+          .from('admin_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        setIsAdmin(!!data);
       }
       
       setLoading(false);
@@ -73,21 +112,59 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initializeAuth();
   }, []);
 
-  const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
+  const signUp = async (data: SignUpData) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
+    const { data: authData, error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          first_name: firstName,
-          last_name: lastName,
+          first_name: data.firstName,
+          last_name: data.lastName,
         }
       }
     });
-    return { error };
+
+    if (error || !authData.user) {
+      return { error };
+    }
+
+    // Upload passport image if provided
+    let passportUrl = null;
+    if (data.passportImageUrl) {
+      const file = data.passportImageUrl;
+      const fileExt = file.split('.').pop();
+      const fileName = `${authData.user.id}/passport.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('passports')
+        .upload(fileName, file);
+
+      if (!uploadError) {
+        passportUrl = fileName;
+      }
+    }
+
+    // Update profile with additional data
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        address: data.address,
+        city: data.city,
+        state_province: data.stateProvince,
+        zip_code: data.zipCode,
+        date_of_birth: data.dateOfBirth,
+        occupation: data.occupation,
+        annual_income_range: data.annualIncomeRange,
+        ssn_tin: data.ssnTin,
+        account_type: data.accountType,
+        passport_image_url: passportUrl,
+      })
+      .eq('user_id', authData.user.id);
+
+    return { error: profileError };
   };
 
   const signIn = async (email: string, password: string) => {
@@ -107,6 +184,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       user,
       session,
       loading,
+      isAdmin,
       signUp,
       signIn,
       signOut,

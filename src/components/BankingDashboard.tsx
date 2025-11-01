@@ -838,6 +838,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { usePresence } from "@/hooks/usePresence";
+import LiveCurrencyChart from "@/components/LiveCurrencyChart";
 import { 
   ArrowUpRight, 
   ArrowDownLeft, 
@@ -1293,6 +1294,11 @@ export const BankingDashboard = () => {
                 </Card>
               </div>
             )}
+
+            {/* Live Currency Chart */}
+            <div className="mt-6">
+              <LiveCurrencyChart />
+            </div>
           </div>
         </div>
       </div>

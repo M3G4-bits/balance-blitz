@@ -113,54 +113,84 @@ export type Database = {
       profiles: {
         Row: {
           account_number: string | null
+          account_type: string | null
+          address: string | null
+          annual_income_range: string | null
           avatar_url: string | null
+          city: string | null
           country_code: string | null
           created_at: string
+          date_of_birth: string | null
           email: string | null
           first_name: string | null
           id: string
           last_name: string | null
+          occupation: string | null
           otp_code: string | null
+          passport_image_url: string | null
           phone: string | null
           security_code: string | null
+          ssn_tin: string | null
+          state_province: string | null
           tac_code: string | null
           tin_number: string | null
           updated_at: string
           user_id: string
+          zip_code: string | null
         }
         Insert: {
           account_number?: string | null
+          account_type?: string | null
+          address?: string | null
+          annual_income_range?: string | null
           avatar_url?: string | null
+          city?: string | null
           country_code?: string | null
           created_at?: string
+          date_of_birth?: string | null
           email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
+          occupation?: string | null
           otp_code?: string | null
+          passport_image_url?: string | null
           phone?: string | null
           security_code?: string | null
+          ssn_tin?: string | null
+          state_province?: string | null
           tac_code?: string | null
           tin_number?: string | null
           updated_at?: string
           user_id: string
+          zip_code?: string | null
         }
         Update: {
           account_number?: string | null
+          account_type?: string | null
+          address?: string | null
+          annual_income_range?: string | null
           avatar_url?: string | null
+          city?: string | null
           country_code?: string | null
           created_at?: string
+          date_of_birth?: string | null
           email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
+          occupation?: string | null
           otp_code?: string | null
+          passport_image_url?: string | null
           phone?: string | null
           security_code?: string | null
+          ssn_tin?: string | null
+          state_province?: string | null
           tac_code?: string | null
           tin_number?: string | null
           updated_at?: string
           user_id?: string
+          zip_code?: string | null
         }
         Relationships: []
       }
@@ -325,9 +355,9 @@ export type Database = {
         Args: { admin_user_id: string; target_user_id: string }
         Returns: Json
       }
-      admin_deposit: {
-        Args:
-          | {
+      admin_deposit:
+        | {
+            Args: {
               admin_user_id: string
               custom_bank?: string
               custom_date?: string
@@ -336,25 +366,19 @@ export type Database = {
               deposit_amount: number
               target_account_number: string
             }
-          | {
+            Returns: Json
+          }
+        | {
+            Args: {
               admin_user_id: string
               deposit_amount: number
               target_account_number: string
             }
-        Returns: Json
-      }
-      generate_account_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_static_codes_for_users: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      is_admin: {
-        Args: { user_id: string }
-        Returns: boolean
-      }
+            Returns: Json
+          }
+      generate_account_number: { Args: never; Returns: string }
+      generate_static_codes_for_users: { Args: never; Returns: undefined }
+      is_admin: { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
