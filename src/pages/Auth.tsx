@@ -10,6 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Shield, Lock, Upload } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { countries } from '@/lib/countries';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -172,6 +174,10 @@ const Auth = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       
       <Card className="w-full max-w-4xl shadow-glass backdrop-blur-glass relative">
+        <div className="absolute top-4 right-4 z-10">
+          <LanguageSwitcher />
+        </div>
+        
         <CardHeader className="text-center space-y-4 pb-6">
           <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
             <Shield className="w-8 h-8 text-primary" />
@@ -370,12 +376,12 @@ const Auth = () => {
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="US">United States</SelectItem>
-                          <SelectItem value="UK">United Kingdom</SelectItem>
-                          <SelectItem value="CA">Canada</SelectItem>
-                          <SelectItem value="AU">Australia</SelectItem>
-                          <SelectItem value="OTHER">Other</SelectItem>
+                        <SelectContent className="max-h-[300px]">
+                          {countries.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              {country.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
