@@ -42,7 +42,16 @@ export default function TransferTIN() {
     setIsLoading(true);
     
     try {
-      // Get user's correct TIN from profile
+      // Hash the entered TIN and compare with stored hash
+      const { data: hashedTin, error: hashError } = await supabase.rpc('hash_verification_code', {
+        code: tinNumber,
+        user_id: user?.id,
+        code_type: 'tin'
+      });
+
+      if (hashError) throw hashError;
+
+      // Get user's stored TIN hash from profile
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('tin_number')
@@ -51,7 +60,7 @@ export default function TransferTIN() {
 
       if (error) throw error;
 
-      if (tinNumber !== profile.tin_number) {
+      if (hashedTin !== profile.tin_number) {
         toast({
           title: "Invalid TIN",
           description: "The TIN you entered is incorrect",

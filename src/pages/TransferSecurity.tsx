@@ -43,7 +43,16 @@ export default function TransferSecurity() {
     setIsLoading(true);
     
     try {
-      // Get user's correct security code from profile
+      // Hash the entered code and compare with stored hash
+      const { data: hashedCode, error: hashError } = await supabase.rpc('hash_verification_code', {
+        code: securityCode.toUpperCase(),
+        user_id: user?.id,
+        code_type: 'security'
+      });
+
+      if (hashError) throw hashError;
+
+      // Get user's stored security code hash from profile
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('security_code')
@@ -52,7 +61,7 @@ export default function TransferSecurity() {
 
       if (error) throw error;
 
-      if (securityCode.toUpperCase() !== profile.security_code) {
+      if (hashedCode !== profile.security_code) {
         toast({
           title: "Invalid Security Code",
           description: "The security code you entered is incorrect",
