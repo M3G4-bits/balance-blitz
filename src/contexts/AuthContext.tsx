@@ -74,12 +74,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           // Check admin status
           if (session?.user) {
-            const { data } = await supabase
-              .from('admin_roles')
-              .select('role')
-              .eq('user_id', session.user.id)
-              .single();
-            setIsAdmin(!!data);
+            const { data: isAdminRes } = await supabase
+              .rpc('is_admin', { user_id: session.user.id });
+            setIsAdmin(!!isAdminRes);
           } else {
             setIsAdmin(false);
           }
@@ -96,12 +93,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session.user);
         
         // Check admin status
-        const { data } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
-        setIsAdmin(!!data);
+        const { data: isAdminRes } = await supabase
+          .rpc('is_admin', { user_id: session.user.id });
+        setIsAdmin(!!isAdminRes);
       }
       
       setLoading(false);
@@ -131,19 +125,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return { error };
     }
 
-    // Upload passport image if provided
-    let passportUrl = null;
+    // Handle passport image: move temp upload to user folder and set avatar URL
+    let passportPath: string | null = null;
+    let avatarPublicUrl: string | null = null;
     if (data.passportImageUrl) {
-      const file = data.passportImageUrl;
-      const fileExt = file.split('.').pop();
-      const fileName = `${authData.user.id}/passport.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('passports')
-        .upload(fileName, file);
+      try {
+        const sourcePath = data.passportImageUrl;
+        const fileExt = sourcePath.split('.').pop();
+        const desiredPath = `${authData.user.id}/passport.${fileExt}`;
 
-      if (!uploadError) {
-        passportUrl = fileName;
+        if (sourcePath !== desiredPath) {
+          await supabase.storage.from('passports').move(sourcePath, desiredPath);
+        }
+        const finalPath = desiredPath;
+        const { data: pub } = supabase.storage
+          .from('passports')
+          .getPublicUrl(finalPath);
+        if (pub?.publicUrl) {
+          avatarPublicUrl = pub.publicUrl;
+          passportPath = finalPath;
+        }
+      } catch (e) {
+        console.error('Error handling passport image:', e);
       }
     }
 
@@ -160,7 +163,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         annual_income_range: data.annualIncomeRange,
         ssn_tin: data.ssnTin,
         account_type: data.accountType,
-        passport_image_url: passportUrl,
+        passport_image_url: passportPath,
+        avatar_url: avatarPublicUrl,
       })
       .eq('user_id', authData.user.id);
 

@@ -1017,7 +1017,7 @@ export const BankingDashboard = () => {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Button 
-                      className="flex-1 bg-primary hover:bg-primary/90"
+                      className="flex-1 bg-primary hover:bg-primary/90 rounded-full"
                       onClick={handleTransferClick}
                       disabled={isLoadingTransfer}
                     >
