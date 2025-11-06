@@ -378,10 +378,6 @@ export type Database = {
           }
       generate_account_number: { Args: never; Returns: string }
       generate_static_codes_for_users: { Args: never; Returns: undefined }
-      hash_verification_code: {
-        Args: { code: string; code_type: string; user_id: string }
-        Returns: string
-      }
       is_admin: { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {

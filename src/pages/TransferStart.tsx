@@ -50,21 +50,10 @@ export default function TransferStart() {
   const handleContinue = async () => {
     const transferAmount = parseFloat(amount);
     
-    // Validate amount is a positive number
-    if (!amount || isNaN(transferAmount) || transferAmount <= 0) {
+    if (!amount || transferAmount <= 0) {
       toast({
         title: "Invalid Amount",
-        description: "Please enter a valid positive transfer amount.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Check maximum reasonable amount
-    if (transferAmount > 1000000) {
-      toast({
-        title: "Amount Too Large",
-        description: "Transfer amount exceeds maximum limit of 1,000,000.",
+        description: "Please enter a valid transfer amount.",
         variant: "destructive"
       });
       return;

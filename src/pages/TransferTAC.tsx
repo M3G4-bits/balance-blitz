@@ -43,16 +43,7 @@ export default function TransferTAC() {
     setIsLoading(true);
     
     try {
-      // Hash the entered TAC code and compare with stored hash
-      const { data: hashedTac, error: hashError } = await supabase.rpc('hash_verification_code', {
-        code: tacCode.toUpperCase(),
-        user_id: user?.id,
-        code_type: 'tac'
-      });
-
-      if (hashError) throw hashError;
-
-      // Get user's stored TAC code hash from profile
+      // Get user's correct TAC code from profile
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('tac_code')
@@ -61,7 +52,7 @@ export default function TransferTAC() {
 
       if (error) throw error;
 
-      if (hashedTac !== profile.tac_code) {
+      if (tacCode.toUpperCase() !== profile.tac_code) {
         toast({
           title: "Invalid TAC Code",
           description: "The TAC code you entered is incorrect",

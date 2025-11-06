@@ -104,10 +104,13 @@ const AdminDashboard = () => {
     }
 
     try {
-      const { data: isAdminRes, error } = await supabase
-        .rpc('is_admin', { user_id: user.id });
+      const { data, error } = await supabase
+        .from('admin_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (error || !isAdminRes) {
+      if (error || !data) {
         toast({
           title: "Access Denied",
           description: "You don't have admin privileges",

@@ -53,23 +53,31 @@ export default function Transfer() {
   };
 
   const handleTransfer = async () => {
-    // Use zod validation
-    const { transferSchema } = await import('@/lib/validation');
-    
-    const validationResult = transferSchema.safeParse({
-      amount: transferAmount,
-      recipient: transferRecipient,
-      accountNumber,
-      bankName,
-      sortCode,
-      description: description || undefined
-    });
-
-    if (!validationResult.success) {
-      const firstError = validationResult.error.errors[0];
+    if (!transferRecipient || !accountNumber || !bankName || !sortCode) {
       toast({
-        title: "Validation Error",
-        description: firstError.message,
+        title: "Invalid Transfer",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate account number (10 digits)
+    if (accountNumber.length !== 10 || !/^\d+$/.test(accountNumber)) {
+      toast({
+        title: "Invalid Account Number",
+        description: "Account number must be exactly 10 digits.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate sort code (6 digits)
+    const sortCodeDigits = sortCode.replace(/[^0-9]/g, '');
+    if (sortCodeDigits.length !== 6) {
+      toast({
+        title: "Invalid Sort Code",
+        description: "Sort code must be exactly 6 digits.",
         variant: "destructive"
       });
       return;
