@@ -37,14 +37,7 @@ const Home = () => {
 
   // Show loading or captcha for non-authenticated users
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background bg-banking-gradient flex items-center justify-center">
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <span className="h-5 w-5 rounded-full border-2 border-primary/30 border-t-primary animate-spin" aria-hidden="true"></span>
-          <span>Loading...</span>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // If user exists, we're redirecting to dashboard

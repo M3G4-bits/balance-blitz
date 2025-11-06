@@ -23,8 +23,6 @@
     
     <!-- Smartsupp Live Chat script -->
     <script type="text/javascript">
-      const __isPreviewEnv = /lovableproject\.com|lovable\.app|id-preview--/.test(location.hostname);
-      if (__isPreviewEnv) { console.warn('Smartsupp disabled in preview:', location.hostname); } else {
       var _smartsupp = _smartsupp || {};
       _smartsupp.key = '5862f8719f9bcbc22f1264aac5514d40b4633681';
       window.smartsupp||(function(d) {
@@ -156,7 +154,6 @@
       
       // Force chat to be visible even on restricted pages
       smartsupp('visibility', 'always');
-      }
     </script>
   </body>
 </html>
