@@ -66,47 +66,70 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      // Set up auth state listener
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
+      try {
+        // Set up auth state listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (event, session) => {
+            setSession(session);
+            setUser(session?.user ?? null);
+            
+            // Check admin status
+            if (session?.user) {
+              const { data } = await supabase
+                .from('admin_roles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .single();
+              setIsAdmin(!!data);
+            } else {
+              setIsAdmin(false);
+            }
+            
+            setLoading(false);
+          }
+        );
+
+        // Check for existing session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        // If there's an auth error, clear session and redirect
+        if (error) {
+          console.error('Auth session error:', error);
+          await supabase.auth.signOut();
+          sessionStorage.removeItem('captchaVerified');
+          setSession(null);
+          setUser(null);
+          setIsAdmin(false);
+          setLoading(false);
+          return () => subscription.unsubscribe();
+        }
+        
+        if (session?.user) {
           setSession(session);
-          setUser(session?.user ?? null);
+          setUser(session.user);
           
           // Check admin status
-          if (session?.user) {
-            const { data } = await supabase
-              .from('admin_roles')
-              .select('role')
-              .eq('user_id', session.user.id)
-              .single();
-            setIsAdmin(!!data);
-          } else {
-            setIsAdmin(false);
-          }
-          
-          setLoading(false);
+          const { data } = await supabase
+            .from('admin_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .single();
+          setIsAdmin(!!data);
         }
-      );
-
-      // Check for existing session
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        setSession(session);
-        setUser(session.user);
         
-        // Check admin status
-        const { data } = await supabase
-          .from('admin_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
-        setIsAdmin(!!data);
-      }
-      
-      setLoading(false);
+        setLoading(false);
 
-      return () => subscription.unsubscribe();
+        return () => subscription.unsubscribe();
+      } catch (error) {
+        console.error('Failed to initialize auth:', error);
+        // Clear everything on error
+        await supabase.auth.signOut();
+        sessionStorage.removeItem('captchaVerified');
+        setSession(null);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+      }
     };
 
     initializeAuth();

@@ -99,7 +99,7 @@ const AdminDashboard = () => {
   const checkAdminAccess = async () => {
     // Allow authenticated users; captcha not required here
     if (!user) {
-      navigate('/auth');
+      navigate('/');
       return;
     }
 
@@ -123,7 +123,7 @@ const AdminDashboard = () => {
       setIsLoading(false);
     } catch (error) {
       console.error('Error checking admin access:', error);
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 
