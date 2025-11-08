@@ -69,23 +69,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         // Set up auth state listener
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          async (event, session) => {
+          (event, session) => {
             setSession(session);
             setUser(session?.user ?? null);
-            
-            // Check admin status
+
             if (session?.user) {
-              const { data } = await supabase
-                .from('admin_roles')
-                .select('role')
-                .eq('user_id', session.user.id)
-                .single();
-              setIsAdmin(!!data);
+              // Defer Supabase calls to avoid deadlocks inside auth callback
+              setTimeout(async () => {
+                try {
+                  const { data } = await supabase
+                    .from('admin_roles')
+                    .select('role')
+                    .eq('user_id', session.user!.id)
+                    .single();
+                  setIsAdmin(!!data);
+                } catch (e) {
+                  console.error('Admin role check failed:', e);
+                  setIsAdmin(false);
+                } finally {
+                  setLoading(false);
+                }
+              }, 0);
             } else {
               setIsAdmin(false);
+              setLoading(false);
             }
-            
-            setLoading(false);
           }
         );
 
