@@ -120,10 +120,13 @@ const AdminDashboard = () => {
         return;
       }
 
-      setIsLoading(false);
+      // Access granted
     } catch (error) {
       console.error('Error checking admin access:', error);
       navigate('/');
+    } finally {
+      // Always clear local loading to avoid a stuck spinner
+      setIsLoading(false);
     }
   };
 
