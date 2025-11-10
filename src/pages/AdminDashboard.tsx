@@ -420,19 +420,16 @@ const AdminDashboard = () => {
     }
   };
 
-  const toggleTransferSetting = async (userId: string) => {
+  const setTransferMode = async (userId: string, forceSuccess: boolean) => {
     try {
-      const currentSetting = transferSettings[userId] ?? true;
-      const newSetting = !currentSetting;
-      
-      console.log(`Toggling transfer setting for user ${userId}: ${currentSetting} -> ${newSetting}`);
+      console.log(`Setting transfer mode for user ${userId} to ${forceSuccess ? 'SUCCESS' : 'FAILURE'}`);
 
       // Use upsert for better reliability and wait for completion
       const { data, error } = await supabase
         .from('admin_transfer_settings')
         .upsert({
           user_id: userId,
-          force_success: newSetting,
+          force_success: forceSuccess,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'user_id',
@@ -448,12 +445,12 @@ const AdminDashboard = () => {
       // Update local state only after successful database operation
       setTransferSettings(prev => ({
         ...prev,
-        [userId]: newSetting
+        [userId]: forceSuccess
       }));
       
-      console.log(`Successfully updated transfer setting for user ${userId} to ${newSetting}`, data);
+      console.log(`Successfully set transfer mode for user ${userId} to ${forceSuccess ? 'SUCCESS' : 'FAILURE'}`, data);
 
-      if (!newSetting) {
+      if (!forceSuccess) {
         // Fetch user's static codes from profile for failure mode
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -472,11 +469,11 @@ const AdminDashboard = () => {
       }
 
       toast({
-        title: "Success",
-        description: `Transfer setting updated for ${selectedUser?.first_name}`,
+        title: "Transfer Mode Updated",
+        description: `Transfer mode set to ${forceSuccess ? "Success" : "Failure"} for ${selectedUser?.first_name}`,
       });
     } catch (error) {
-      console.error('Error updating transfer setting:', error);
+      console.error('Error setting transfer mode:', error);
       toast({
         title: "Error",
         description: "Failed to update transfer setting",
@@ -1154,13 +1151,13 @@ const AdminDashboard = () => {
                       <div className="flex space-x-2">
                         <Button
                           variant={transferSettings[selectedUser.user_id] ?? true ? "default" : "outline"}
-                          onClick={() => toggleTransferSetting(selectedUser.user_id)}
+                          onClick={() => setTransferMode(selectedUser.user_id, true)}
                         >
                           Force Success
                         </Button>
                         <Button
                           variant={!(transferSettings[selectedUser.user_id] ?? true) ? "destructive" : "outline"}
-                          onClick={() => toggleTransferSetting(selectedUser.user_id)}
+                          onClick={() => setTransferMode(selectedUser.user_id, false)}
                         >
                           Force Failure
                         </Button>

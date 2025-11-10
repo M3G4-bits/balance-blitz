@@ -12,6 +12,10 @@ const resources = {
       "profile": "Profile",
       "settings": "Settings",
       "language": "Language",
+      "footer": {
+        "copyright": "© 2024 Credit Stirling Bank PLC",
+        "rights": "All rights reserved"
+      }
     }
   },
   es: {
@@ -24,6 +28,10 @@ const resources = {
       "profile": "Perfil",
       "settings": "Configuración",
       "language": "Idioma",
+      "footer": {
+        "copyright": "© 2024 Credit Stirling Bank PLC",
+        "rights": "Todos los derechos reservados"
+      }
     }
   },
   fr: {
@@ -36,6 +44,10 @@ const resources = {
       "profile": "Profil",
       "settings": "Paramètres",
       "language": "Langue",
+      "footer": {
+        "copyright": "© 2024 Credit Stirling Bank PLC",
+        "rights": "Tous droits réservés"
+      }
     }
   },
   de: {
@@ -48,6 +60,10 @@ const resources = {
       "profile": "Profil",
       "settings": "Einstellungen",
       "language": "Sprache",
+      "footer": {
+        "copyright": "© 2024 Credit Stirling Bank PLC",
+        "rights": "Alle Rechte vorbehalten"
+      }
     }
   },
   zh: {
@@ -60,6 +76,10 @@ const resources = {
       "profile": "个人资料",
       "settings": "设置",
       "language": "语言",
+      "footer": {
+        "copyright": "© 2024 Credit Stirling Bank PLC",
+        "rights": "版权所有"
+      }
     }
   }
 };
